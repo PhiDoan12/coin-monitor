@@ -85,6 +85,9 @@ public class MonitorPrice {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.GREEN_COLOR);
                 }
+                if(Constant.notifyCoin.containsKey(coin)){
+                    da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));
+                }
             }
             ////////////////////////
             for(Constant.US_STOCK us : Constant.US_STOCK.values()){
@@ -235,7 +238,7 @@ public class MonitorPrice {
         } catch (InterruptedIOException ex) {
         } catch (IOException e) {
             Log.e("", "", e);
-            da.put("DA", "No Access Internet");
+            da.put("DA", "No Access Internet. Error:"+ e);
         } catch (Exception e) {
             Log.e("", "", e);
             da.put("DA", e.getMessage());

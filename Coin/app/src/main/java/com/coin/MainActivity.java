@@ -20,6 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -54,20 +56,11 @@ public class MainActivity extends AppCompatActivity {
             while (true){
                 try {
                     try {
-                        if(onPause == true && isDeviceSecured() == true) {
-                            if(Constant.priceBinanceCoin.get(Constant.KEY_PERCENT_SHOW_PRICE_VALUE) == null){
-                                Thread.sleep(8 * 1000);
-                            }
-                            String price = Constant.KEY_PERCENT_SHOW_PRICE_VALUE + ":" + Constant.priceBinanceCoin.get(Constant.KEY_PERCENT_SHOW_PRICE_VALUE);
-                            System.out.println(price);
-                            notifyPriceBTC(price);
-                        }
                         Constant.getPriceUsStock();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                     Thread.sleep(5 * 60 * 1000);
-                    //Thread.sleep(10 * 1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -205,6 +198,15 @@ public class MainActivity extends AppCompatActivity {
 
                         }
                     }
+
+                    if(onPause == true && isDeviceSecured() == true) {
+                        try {
+                            notifyPriceBTC(hd.get("SHOW_PRICE_SCREEN"));
+                        } catch (InterruptedException e) {
+                            //e.printStackTrace();
+                        }
+                    }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -285,6 +287,9 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void notifyPriceBTC(String price) throws InterruptedException {
+        if(StringUtils.isEmpty(price)){
+            return;
+        }
         if(notificationManager == null){
             notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         }

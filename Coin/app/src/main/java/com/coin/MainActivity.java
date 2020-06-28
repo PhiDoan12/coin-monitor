@@ -54,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
             while (true){
                 try {
                     try {
-                        if(onPause == true && isDeviceSecured() == true){
+                        if(onPause == true && isDeviceSecured() == true) {
+                            if(Constant.priceBinanceCoin.get(Constant.KEY_PERCENT_SHOW_PRICE_VALUE) == null){
+                                Thread.sleep(8 * 1000);
+                            }
                             String price = Constant.KEY_PERCENT_SHOW_PRICE_VALUE + ":" + Constant.priceBinanceCoin.get(Constant.KEY_PERCENT_SHOW_PRICE_VALUE);
                             System.out.println(price);
                             notifyPriceBTC(price);

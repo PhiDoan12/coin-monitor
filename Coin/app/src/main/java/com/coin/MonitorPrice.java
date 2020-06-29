@@ -239,9 +239,11 @@ public class MonitorPrice {
         } catch (IOException e) {
             Log.e("", "", e);
             da.put("DA", "No Access Internet. Error:"+ e);
+            da.put("ERROR", "No Access Internet. Error:"+ e);
         } catch (Exception e) {
             Log.e("", "", e);
             da.put("DA", e.getMessage());
+            da.put("ERROR", "No Access Internet. Error:"+ e);
         }
         return da;
     }

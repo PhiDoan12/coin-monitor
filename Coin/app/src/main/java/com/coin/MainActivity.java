@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationManager notificationManager = null;
     private static final String CHANNEL_ID = "coin.price.notify";
     private static final String CHANNEL_ID_BTC = "coin.price.notify.btc";
+    KeyguardManager manager = null;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -201,9 +202,21 @@ public class MainActivity extends AppCompatActivity {
 
                     if(onPause == true && isDeviceSecured() == true) {
                         try {
+                            System.out.println("SHOW_PRICE_SCREEN:  " + hd.get("SHOW_PRICE_SCREEN"));
                             notifyPriceBTC(hd.get("SHOW_PRICE_SCREEN"));
                         } catch (InterruptedException e) {
                             //e.printStackTrace();
+                        }
+                    }
+
+                    if(onPause == true && isDeviceSecured() == true) {
+                        try {
+                            if(hd.containsKey("ERROR")){
+                                System.out.println("ERROR:  " + hd.get("ERROR"));
+                                notifyPriceBTC(hd.get("ERROR"));
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
                     }
 
@@ -326,7 +339,9 @@ public class MainActivity extends AppCompatActivity {
     {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         {
-            KeyguardManager manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+            if(manager == null){
+                manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+            }
             return manager.isKeyguardLocked();
         }
         return false;

@@ -29,7 +29,7 @@ public class Constant {
     public static String GREEN_COLOR = "#0fbd49";
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
-    public static String REAL_TIME = "0.035";
+    public static String REAL_TIME = "0.04";
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";
     }
@@ -92,6 +92,7 @@ public class Constant {
     }
 
     public static synchronized HashMap<String, String> getPriceBinance() throws IOException {
+        System.out.println("getPriceBinance() -> " + url);
         Document doc = Jsoup.connect(Constant.url).ignoreContentType(true).timeout(30 * 1000).get();
         String dataFromB = doc.text();
         Type listType = new TypeToken<List<PriceBinance>>() {}.getType();

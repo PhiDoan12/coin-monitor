@@ -1,6 +1,6 @@
 package com.coin;
 
-public class PriceBinace {
+public class PriceBinance {
     private String symbol;
     private String price;
 

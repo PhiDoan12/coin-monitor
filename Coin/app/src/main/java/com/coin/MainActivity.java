@@ -53,32 +53,42 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         price = (Button) findViewById(R.id.button2);
         loadData = (Button) findViewById(R.id.button3);
+
         Thread schedulerGetPriceStockUs = new Thread(() -> {
+            int times = (5 * 60 * 1000) / (4 * 1000);
+            int count = 0;
+            try {
+                Constant.getPriceUsStock();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             while (true){
                 try {
-                    try {
-                        Constant.getPriceUsStock();
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    Constant.resetSaveCount();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    Thread.sleep(4 * 1000);
+                    count++;
+                    if(count >= times){
+                        Thread scheduler = new Thread(() -> {
+                            try {
+                                Constant.getPriceUsStock();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        });
+                        scheduler.start();
+                        count = 0;
                     }
-                    Thread.sleep(5 * 60 * 1000);
-                } catch (InterruptedException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
         schedulerGetPriceStockUs.start();
-        Thread schedulerSaveCount = new Thread(() -> {
-            while (true){
-                try {
-                    Constant.resetSaveCount();
-                    Thread.sleep(4 * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        schedulerSaveCount.start();
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         price.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 getPrice();
             }
         });
+
         loadData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        //init
+
         getPrice();
         Toast.makeText(getApplicationContext(), "Loading!",
                 Toast.LENGTH_SHORT).show();
@@ -127,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("onResume");
         super.onResume();
         onPause = false;
+        Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal(Constant.REAL_TIME));
         getPrice();
     }
 
@@ -148,34 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
     private void getPrice() {
         if (threadLoop != null && threadLoop.isAlive()) {
-            new Thread(new Runnable() {
-                final StringBuilder builder = new StringBuilder();
-
+            Thread t = new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    MonitorPrice monitorPrice = new MonitorPrice();
-                    HashMap<String, String> hd = monitorPrice.getPrice(getApplicationContext());
-                    if (hd == null) {
+                    synchronized (threadLoop) {
+                        threadLoop.notify();
                         return;
                     }
-                    builder.append(hd.get("DA"));
-                    if (hd.containsKey("NO") && onPause == true) {
-                        // no thing.
-                    }
-                    threadLoop.interrupt();
-                    Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("0.05"));
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            text.setText("");
-                            text.setText(Html.fromHtml(builder.toString()));
-                            button.setText("Running");
-                        }
-                    });
                 }
-            }).start();
-            return;
+            });
+            t.start();
         }
+
         threadLoop = new Thread(new Runnable() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -230,12 +227,23 @@ public class MainActivity extends AppCompatActivity {
                     });
                     try {
                         if (monitorPrice.getTime() == null) {
-                            Thread.sleep(3 * 60000);
+                            synchronized (this) {
+                                this.wait(3 * 60000);
+                            }
                             return;
                         }
-                        Long time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
-                        Thread.sleep(time);
-                        //Thread.sleep(30 * 1000);
+
+                        Long time = 0L;
+                        if(onPause == false) {
+                            time = new BigDecimal(Constant.REAL_TIME).multiply(new BigDecimal("60000")).longValue();
+                        }else{
+                            time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
+                        }
+
+                        synchronized (this){
+                            this.wait(time);
+                        }
+
                     } catch (InterruptedException e) {
                         //e.printStackTrace();
                     }
@@ -342,8 +350,10 @@ public class MainActivity extends AppCompatActivity {
             if(manager == null){
                 manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
             }
+            System.out.println("isDeviceSecured:"+ manager.isKeyguardLocked());
             return manager.isKeyguardLocked();
         }
+        System.out.println("===>  Version: isDeviceSecured:"+ false);
         return false;
     }
 }

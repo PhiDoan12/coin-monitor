@@ -25,8 +25,6 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 
 public class MonitorPrice {
-    private static Gson gson = new Gson();
-
     public BigDecimal getTime() {
         return Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
     }
@@ -46,7 +44,11 @@ public class MonitorPrice {
             Constant.priceBinanceCoin.clear();
 
             String text = "";
+            HashMap<String, String> priceMap = Constant.getPriceBinance();
             for (String coin : Constant.priceBoughtCoin.keySet()) {
+                if(!priceMap.containsKey(coin)){
+                    continue;
+                }
                 if (coin.equals(Constant.KEY_PERCENT)) {
                     continue;
                 }
@@ -62,23 +64,9 @@ public class MonitorPrice {
                     continue;
                 }
 
-                String coinPair = coin + Constant.PairCoin.USDT.name();
-                String Url = Constant.url;
-                if(coin.equalsIgnoreCase(Constant.PairCoin.USDT.toString())){
-                    coinPair = coin + Constant.PairCoin.USD.name();
-                    Url = Constant.URL_GET_PRICE_USDT_USD;
-                }
-                Document doc = Jsoup.connect(String.format(Url, coinPair))
-                        .ignoreContentType(true).timeout(30 * 1000).get();
-                String dataFromB = doc.text();
-                PriceBinace priceFromB = gson.fromJson(dataFromB, PriceBinace.class);
-                if (priceFromB == null) {
-                    System.out.println(coin);
-                    continue;
-                }
-                Constant.priceBinanceCoin.put(coin, new BigDecimal(priceFromB.getPrice()).setScale(5, RoundingMode.HALF_UP));
+                Constant.priceBinanceCoin.put(coin, new BigDecimal(priceMap.get(coin)).setScale(5, RoundingMode.HALF_UP));
                 String notifyCoinCode = Constant.notifyCoin.containsKey(coin) ? "N" : "";
-                if(new BigDecimal(priceFromB.getPrice()).compareTo(Constant.priceBoughtCoin.get(coin)) == -1){
+                if(new BigDecimal(priceMap.get(coin)).compareTo(Constant.priceBoughtCoin.get(coin)) == -1){
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.RED_COLOR);
                 }else{
@@ -89,6 +77,7 @@ public class MonitorPrice {
                     da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));
                 }
             }
+
             ////////////////////////
             for(Constant.US_STOCK us : Constant.US_STOCK.values()){
                 if(!Constant.priceBoughtCoin.containsKey(us.name().toUpperCase())){

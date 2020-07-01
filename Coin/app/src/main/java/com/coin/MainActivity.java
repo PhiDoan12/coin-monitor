@@ -6,6 +6,8 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.net.Uri;
@@ -42,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     NotificationManager notificationManager = null;
     private static final String CHANNEL_ID = "coin.price.notify";
     private static final String CHANNEL_ID_BTC = "coin.price.notify.btc";
-    KeyguardManager manager = null;
+    MonitorPrice monitorPrice = new MonitorPrice();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -53,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         price = (Button) findViewById(R.id.button2);
         loadData = (Button) findViewById(R.id.button3);
+
+        PhoneUnlockedReceiver receiver = new PhoneUnlockedReceiver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Intent.ACTION_USER_PRESENT);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(receiver, filter);
 
         Thread schedulerGetPriceStockUs = new Thread(() -> {
             int times = (5 * 60 * 1000) / (4 * 1000);
@@ -99,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
                     if (!textsss.contains(Constant.KEY_PERCENT)) {
                         return;
                     }
-                    MonitorPrice monitorPrice = new MonitorPrice();
                     monitorPrice.saveData(getApplicationContext(), textsss);
                     Constant.resetSaveCount();
                     getPrice();
@@ -124,10 +131,9 @@ public class MainActivity extends AppCompatActivity {
                     //onPause = false;
                     setOnPause(false);
                     button.setText("Save");
-                    MonitorPrice monitorPrice = new MonitorPrice();
                     text.setText(Html.fromHtml(monitorPrice.loadDataToText(getApplicationContext())));
                 } catch (Exception e) {
-
+                    e.printStackTrace();
                 }
             }
         });
@@ -184,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
                 while (true) {
                     final StringBuilder builder = new StringBuilder();
                     try {
-                        MonitorPrice monitorPrice = new MonitorPrice();
                         HashMap<String, String> hd = monitorPrice.getPrice(getApplicationContext());
                         if (hd == null) {
                             return;
@@ -195,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                                 try {
                                     notifyABC(hd.get("percent"), false);
                                 } catch (InterruptedException e) {
-                                    //e.printStackTrace();
+                                    e.printStackTrace();
                                 }
                             } else {
 
@@ -207,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                                 System.out.println("SHOW_PRICE_SCREEN:  " + hd.get("SHOW_PRICE_SCREEN"));
                                 notifyPriceBTC(hd.get("SHOW_PRICE_SCREEN"));
                             } catch (InterruptedException e) {
-                                //e.printStackTrace();
+                                e.printStackTrace();
                             }
                         }
 
@@ -345,15 +350,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isDeviceSecured() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (manager == null) {
-                manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
-            }
-            System.out.println("isDeviceSecured:" + manager.isKeyguardLocked());
-            return manager.isKeyguardLocked();
-        }
-        System.out.println("===>  Version: isDeviceSecured:" + false);
-        return false;
+//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (manager == null) {
+//                manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
+//            }
+//            System.out.println("isDeviceSecured:" + manager.isKeyguardLocked());
+//            return manager.isKeyguardLocked();
+//        }
+//        System.out.println("===>  Version: isDeviceSecured:" + false);
+        return Constant.getOnLocked();
     }
 
     private synchronized boolean getOnPause() {

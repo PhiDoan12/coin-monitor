@@ -29,7 +29,7 @@ public class MonitorPrice {
         return Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
     }
 
-    public HashMap<String, String> getPrice(Context context) {
+    public synchronized HashMap<String, String> getPrice(Context context) {
         HashMap<String, String> da = new HashMap<>();
         try {
             if (Constant.priceBoughtCoin.size() == 0) {
@@ -224,15 +224,10 @@ public class MonitorPrice {
                     da.put("NO", "A");
                 }
             }
-        } catch (InterruptedIOException ex) {
-        } catch (IOException e) {
-            Log.e("", "", e);
-            da.put("DA", "No Access Internet. Error:"+ e);
-            da.put("ERROR", "No Access Internet. Error:"+ e);
-        } catch (Exception e) {
-            Log.e("", "", e);
+        }catch (Exception e) {
             da.put("DA", e.getMessage());
             da.put("ERROR", "No Access Internet. Error:"+ e);
+            e.printStackTrace();
         }
         return da;
     }
@@ -287,17 +282,17 @@ public class MonitorPrice {
                         Constant.KEY_PERCENT_SHOW_PRICE_VALUE = coinName.toUpperCase();
                     }
                 } catch (Exception ex) {
-
+                    //ex.printStackTrace();
                 }
             }
             br.close();
         } catch (Exception e) {
-            Log.e("", "", e);
+            e.printStackTrace();
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
-                Log.e("", "", e);
+                e.printStackTrace();
             }
         }
     }
@@ -315,12 +310,12 @@ public class MonitorPrice {
             }
             br.close();
         } catch (Exception e) {
-            Log.e("", "", e);
+            e.printStackTrace();
         } finally {
             try {
                 br.close();
             } catch (IOException e) {
-                Log.e("", "", e);
+                e.printStackTrace();
             }
         }
         return config;
@@ -338,7 +333,7 @@ public class MonitorPrice {
             Toast.makeText(context, "File saved successfully!",
                     Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            Log.e("", "", e);
+            e.printStackTrace();
         }
     }
 

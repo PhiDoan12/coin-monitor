@@ -3,12 +3,17 @@ package com.coin;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -30,8 +35,18 @@ public class Constant {
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
     public static String REAL_TIME = "0.04";
+    private static boolean getOnLocked = false;
+
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";
+    }
+
+    public static synchronized boolean getOnLocked() {
+        return getOnLocked;
+    }
+
+    public static synchronized void setOnLocked(boolean getOnLocked) {
+        Constant.getOnLocked = getOnLocked;
     }
 
     public static enum PairCoin {
@@ -83,26 +98,66 @@ public class Constant {
                     //names = "nasdaq_100";
                     break;
             }
-            Document document = Jsoup.connect(url + names)
-                    .timeout(60 * 1000)
-                    .get();
+            String data = MyGETRequest(url);
+            if(StringUtils.isEmpty(data)){
+                return;
+            }
+            Document document = Jsoup.parse(data);
             String price = document.select("span[data-format=maximumFractionDigits:2]").first().text();
             priceStockUs.put(name.name().toUpperCase(), new BigDecimal(price.replace(",", "")));
         }
     }
 
-    public static synchronized HashMap<String, String> getPriceBinance() throws IOException {
-        System.out.println("getPriceBinance() -> " + url);
-        Document doc = Jsoup.connect(Constant.url).ignoreContentType(true).timeout(30 * 1000).get();
-        String dataFromB = doc.text();
-        Type listType = new TypeToken<List<PriceBinance>>() {}.getType();
-        List<PriceBinance> priceBinance = gson.fromJson(dataFromB, listType);
+    public static synchronized HashMap<String, String> getPriceBinance() {
+        boolean success = false;
         HashMap<String,String> map = new HashMap<>();
-        for(PriceBinance price : priceBinance){
-            if(price.getSymbol().contains(PairCoin.USDT.name())){
-                map.put(price.getSymbol().replace("USDT", "").toUpperCase(), price.getPrice());
+        while (success == false){
+            try {
+                System.out.println("getPriceBinance() -> " + url);
+                String dataFromB = MyGETRequest(Constant.url);
+                if(StringUtils.isEmpty(dataFromB)){
+                    throw new Exception("->> Binance return empty");
+                }
+                Type listType = new TypeToken<List<PriceBinance>>() {}.getType();
+                List<PriceBinance> priceBinance = gson.fromJson(dataFromB, listType);
+                for(PriceBinance price : priceBinance){
+                    if(price.getSymbol().contains(PairCoin.USDT.name())){
+                        map.put(price.getSymbol().replace("USDT", "").toUpperCase(), price.getPrice());
+                    }
+                }
+                break;
+            }catch (Exception e){
+                e.printStackTrace();
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ex) {
+                    //ex.printStackTrace();
+                }
             }
         }
         return map;
+    }
+
+    public static String MyGETRequest(String url){
+        try {
+            URL urlForGetRequest = new URL(url);
+            String readLine = null;
+            HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+            conection.setRequestMethod("GET");
+            int responseCode = conection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
+                StringBuffer response = new StringBuffer();
+                while ((readLine = in .readLine()) != null) {
+                    response.append(readLine);
+                } in .close();
+                return response.toString();
+            } else {
+                System.out.println("GET NOT WORKED -> "+ Constant.url);
+                return "";
+            }
+        }catch (Exception e){
+            return "";
+        }
     }
 }

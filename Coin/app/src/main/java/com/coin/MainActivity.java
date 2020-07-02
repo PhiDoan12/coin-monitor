@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -36,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     Boolean onPause = false;
     NotificationManager notificationManager = null;
     private static final String CHANNEL_ID = "coin.price.notify";
-    private static final String CHANNEL_ID_BTC = "coin.price.notify.btc";
     MonitorPrice monitorPrice = new MonitorPrice();
     long[] pattern = {0, 500, 200, 500, 200, 500, 200, 500};
 

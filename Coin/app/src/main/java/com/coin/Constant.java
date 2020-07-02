@@ -24,7 +24,6 @@ public class Constant {
     public static final String KEY_PERCENT_ABOUT = "PERCENT_ABOUT";
     public static String KEY_PERCENT_SHOW_PRICE_VALUE = "BTC";
     public static String url = "https://api.binance.com/api/v3/ticker/price";
-    public static String URL_GET_PRICE_USDT_USD = "https://api.binance.us/api/v3/ticker/price?symbol=%s";
     public static ConcurrentSkipListMap<String, BigDecimal> priceBinanceCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> priceBoughtCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> notifyCoin = new ConcurrentSkipListMap<>();
@@ -34,8 +33,9 @@ public class Constant {
     public static String GREEN_COLOR = "#0fbd49";
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
-    public static String REAL_TIME = "0.04";
+    public static String REAL_TIME = "0.03";
     private static boolean getOnLocked = false;
+    public static long count = 0;
 
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";
@@ -67,39 +67,36 @@ public class Constant {
         sandp
     }
 
-    public static synchronized void resetSaveCount(){
+    public static synchronized void resetSaveCount() {
         Constant.COUNT_SAVE_BUTTON = 0;
     }
 
-    public static synchronized void increaseSaveCount(){
+    public static synchronized void increaseSaveCount() {
         Constant.COUNT_SAVE_BUTTON++;
     }
 
-    public static synchronized int getSaveCount(){
+    public static synchronized int getSaveCount() {
         return Constant.COUNT_SAVE_BUTTON;
     }
 
 
-    public static void getPriceUsStock() throws IOException {
+    public static void getPriceUsStock() {
         String url = "https://markets.businessinsider.com/index/";
-        //url = "https://google.com/search?q=";
-        for(US_STOCK name : US_STOCK.values()){
+        for (US_STOCK name : US_STOCK.values()) {
             String names = "";
-            switch (name){
+            switch (name) {
                 case dow:
                     names = "dow_jones";
-                    //names = "dow+30";
                     break;
                 case sandp:
                     names = "s&p_500";
-                    //names = "sp500";
                     break;
                 case nasdaq:
-                    //names = "nasdaq_100";
+                    names = "nasdaq_100";
                     break;
             }
-            String data = MyGETRequest(url);
-            if(StringUtils.isEmpty(data)){
+            String data = MyGETRequest(url + names);
+            if (StringUtils.isEmpty(data)) {
                 return;
             }
             Document document = Jsoup.parse(data);
@@ -110,23 +107,24 @@ public class Constant {
 
     public static synchronized HashMap<String, String> getPriceBinance() {
         boolean success = false;
-        HashMap<String,String> map = new HashMap<>();
-        while (success == false){
+        HashMap<String, String> map = new HashMap<>();
+        while (success == false) {
             try {
                 System.out.println("getPriceBinance() -> " + url);
                 String dataFromB = MyGETRequest(Constant.url);
-                if(StringUtils.isEmpty(dataFromB)){
+                if (StringUtils.isEmpty(dataFromB)) {
                     throw new Exception("->> Binance return empty");
                 }
-                Type listType = new TypeToken<List<PriceBinance>>() {}.getType();
+                Type listType = new TypeToken<List<PriceBinance>>() {
+                }.getType();
                 List<PriceBinance> priceBinance = gson.fromJson(dataFromB, listType);
-                for(PriceBinance price : priceBinance){
-                    if(price.getSymbol().contains(PairCoin.USDT.name())){
+                for (PriceBinance price : priceBinance) {
+                    if (price.getSymbol().contains(PairCoin.USDT.name())) {
                         map.put(price.getSymbol().replace("USDT", "").toUpperCase(), price.getPrice());
                     }
                 }
                 break;
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 try {
                     Thread.sleep(5000);
@@ -138,7 +136,7 @@ public class Constant {
         return map;
     }
 
-    public static String MyGETRequest(String url){
+    public static String MyGETRequest(String url) {
         try {
             URL urlForGetRequest = new URL(url);
             String readLine = null;
@@ -148,15 +146,16 @@ public class Constant {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
                 StringBuffer response = new StringBuffer();
-                while ((readLine = in .readLine()) != null) {
+                while ((readLine = in.readLine()) != null) {
                     response.append(readLine);
-                } in .close();
+                }
+                in.close();
                 return response.toString();
             } else {
-                System.out.println("GET NOT WORKED -> "+ Constant.url);
+                System.out.println("GET NOT WORKED -> " + Constant.url);
                 return "";
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             return "";
         }
     }

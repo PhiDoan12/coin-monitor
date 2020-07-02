@@ -46,7 +46,7 @@ public class MonitorPrice {
             String text = "";
             HashMap<String, String> priceMap = Constant.getPriceBinance();
             for (String coin : Constant.priceBoughtCoin.keySet()) {
-                if(!priceMap.containsKey(coin)){
+                if (!priceMap.containsKey(coin)) {
                     continue;
                 }
                 if (coin.equals(Constant.KEY_PERCENT)) {
@@ -58,38 +58,38 @@ public class MonitorPrice {
                 if (coin.equals(Constant.KEY_PERCENT_ABOUT)) {
                     continue;
                 }
-                if(coin.equalsIgnoreCase(Constant.US_STOCK.dow.toString())
+                if (coin.equalsIgnoreCase(Constant.US_STOCK.dow.toString())
                         || coin.equalsIgnoreCase(Constant.US_STOCK.sandp.toString())
-                        || coin.equalsIgnoreCase(Constant.US_STOCK.nasdaq.toString()) ){
+                        || coin.equalsIgnoreCase(Constant.US_STOCK.nasdaq.toString())) {
                     continue;
                 }
 
                 Constant.priceBinanceCoin.put(coin, new BigDecimal(priceMap.get(coin)).setScale(5, RoundingMode.HALF_UP));
                 String notifyCoinCode = Constant.notifyCoin.containsKey(coin) ? "N" : "";
-                if(new BigDecimal(priceMap.get(coin)).compareTo(Constant.priceBoughtCoin.get(coin)) == -1){
+                if (new BigDecimal(priceMap.get(coin)).compareTo(Constant.priceBoughtCoin.get(coin)) == -1) {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.RED_COLOR);
-                }else{
+                } else {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.GREEN_COLOR);
                 }
-                if(Constant.notifyCoin.containsKey(coin)){
+                if (Constant.notifyCoin.containsKey(coin)) {
                     da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));
                 }
             }
 
             ////////////////////////
-            for(Constant.US_STOCK us : Constant.US_STOCK.values()){
-                if(!Constant.priceBoughtCoin.containsKey(us.name().toUpperCase())){
+            for (Constant.US_STOCK us : Constant.US_STOCK.values()) {
+                if (!Constant.priceBoughtCoin.containsKey(us.name().toUpperCase())) {
                     Constant.priceBoughtCoin.put(us.name().toUpperCase(), new BigDecimal("0"));
                 }
-                if(!Constant.priceStockUs.containsKey(us.name().toUpperCase())){
+                if (!Constant.priceStockUs.containsKey(us.name().toUpperCase())) {
                     continue;
                 }
-                if(Constant.priceStockUs.get(us.name().toUpperCase()).compareTo(Constant.priceBoughtCoin.get(us.name().toUpperCase())) == -1){
+                if (Constant.priceStockUs.get(us.name().toUpperCase()).compareTo(Constant.priceBoughtCoin.get(us.name().toUpperCase())) == -1) {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", us.name().toUpperCase(),
                             Constant.priceStockUs.get(us.name().toUpperCase()), ""), Constant.RED_COLOR);
-                }else{
+                } else {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", us.name().toUpperCase(),
                             Constant.priceStockUs.get(us.name().toUpperCase()), ""), Constant.GREEN_COLOR);
                 }
@@ -143,7 +143,7 @@ public class MonitorPrice {
             }
 
             ////////////////////////
-            for(Constant.US_STOCK us : Constant.US_STOCK.values()){
+            for (Constant.US_STOCK us : Constant.US_STOCK.values()) {
                 if (Constant.priceBoughtCoin.get(us.name().toUpperCase()).compareTo(BigDecimal.ZERO) == 0) {
                     continue;
                 }
@@ -193,15 +193,15 @@ public class MonitorPrice {
             }
 
             // if contain KEY_ABOUT
-            if(Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT)
-                    && Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT).compareTo(BigDecimal.ZERO) != 0){
+            if (Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT)
+                    && Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT).compareTo(BigDecimal.ZERO) != 0) {
                 if (percentIncrese.compareTo(BigDecimal.ZERO) == -1) {
                     if (percentIncrese.compareTo(
                             Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)
                                     .multiply(new BigDecimal("-1"))) == -1
                             || percentIncrese.compareTo(
-                                    Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)
-                                            .multiply(new BigDecimal("-1"))) == 0) {
+                            Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)
+                                    .multiply(new BigDecimal("-1"))) == 0) {
                         da.put("NO", "A");
                     }
                 } else {
@@ -224,9 +224,9 @@ public class MonitorPrice {
                     da.put("NO", "A");
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             da.put("DA", e.getMessage());
-            da.put("ERROR", "No Access Internet. Error:"+ e);
+            da.put("ERROR", "No Access Internet. Error:" + e);
             e.printStackTrace();
         }
         return da;
@@ -235,7 +235,7 @@ public class MonitorPrice {
     private String balanceSpace(String txt, String signal, Integer spaceStandard) {
         Integer spaceFill = spaceStandard - txt.length();
         String space = "";
-        if(signal.contains("-")){
+        if (signal.contains("-")) {
             spaceFill += 20;
         }
         for (int i = 0; i < spaceFill; i++) {
@@ -259,7 +259,7 @@ public class MonitorPrice {
             Constant.notifyCoin.clear();
             String fileName = "mydatacoin.txt";
             boolean existed = fileExists(context, fileName);
-            if(!existed){
+            if (!existed) {
                 FileOutputStream fileout = context.openFileOutput(fileName, Context.MODE_PRIVATE);
                 OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
                 outputWriter.write("BTC:0: \n LOOP:5 \n PERCENT:5");
@@ -270,7 +270,7 @@ public class MonitorPrice {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] d = line.split(":");
-                if(d.length < 2){
+                if (d.length < 2) {
                     continue;
                 }
                 String coinName = d[0].trim().toUpperCase();
@@ -339,7 +339,7 @@ public class MonitorPrice {
 
     public boolean fileExists(Context context, String filename) {
         File file = context.getFileStreamPath(filename);
-        if(file == null || !file.exists() || file.length() == 0) {
+        if (file == null || !file.exists() || file.length() == 0) {
             return false;
         }
         return true;

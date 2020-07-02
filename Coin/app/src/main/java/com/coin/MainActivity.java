@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String CHANNEL_ID_BTC = "coin.price.notify.btc";
     MonitorPrice monitorPrice = new MonitorPrice();
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             int count = 0;
             try {
                 Constant.getPriceUsStock();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             while (true) {
@@ -83,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                         Thread scheduler = new Thread(() -> {
                             try {
                                 Constant.getPriceUsStock();
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         });
@@ -209,9 +208,10 @@ public class MainActivity extends AppCompatActivity {
 
                         if (getOnPause() == true && isDeviceSecured() == true) {
                             try {
+                                Constant.count++;
                                 System.out.println("SHOW_PRICE_SCREEN:  " + hd.get("SHOW_PRICE_SCREEN"));
-                                notifyPriceBTC(hd.get("SHOW_PRICE_SCREEN"));
-                            } catch (InterruptedException e) {
+                                notifyPriceBTC(hd.get("SHOW_PRICE_SCREEN") + " ==> " + Constant.count);
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                                     System.out.println("ERROR:  " + hd.get("ERROR"));
                                     notifyPriceBTC(hd.get("ERROR"));
                                 }
-                            } catch (InterruptedException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
@@ -242,16 +242,12 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         Long time = 0L;
-                        if (getOnPause() == false) {
-                            time = new BigDecimal(Constant.REAL_TIME).multiply(new BigDecimal("60000")).longValue();
-                        } else {
-                            time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
-                        }
+                        time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
 
                         Thread.sleep(time);
 
                     } catch (InterruptedException e) {
-                        //e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }
             }
@@ -313,7 +309,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public void notifyPriceBTC(String price) throws InterruptedException {
+    public void notifyPriceBTC(String price) {
         if (StringUtils.isEmpty(price)) {
             return;
         }
@@ -330,7 +326,7 @@ public class MainActivity extends AppCompatActivity {
                     .setChannelId(CHANNEL_ID_BTC)
                     .build();
         } else {
-            mChannelBTC = new NotificationChannel(CHANNEL_ID_BTC, CHANNEL_ID_BTC, NotificationManager.IMPORTANCE_HIGH);
+            mChannelBTC = new NotificationChannel(CHANNEL_ID_BTC, CHANNEL_ID_BTC, NotificationManager.IMPORTANCE_LOW);
             mChannelBTC.enableLights(false);
             mChannelBTC.enableVibration(false);
             notificationBTC = new Notification.Builder(this)
@@ -350,14 +346,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isDeviceSecured() {
-//        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            if (manager == null) {
-//                manager = (KeyguardManager) getApplicationContext().getSystemService(Context.KEYGUARD_SERVICE);
-//            }
-//            System.out.println("isDeviceSecured:" + manager.isKeyguardLocked());
-//            return manager.isKeyguardLocked();
-//        }
-//        System.out.println("===>  Version: isDeviceSecured:" + false);
         return Constant.getOnLocked();
     }
 

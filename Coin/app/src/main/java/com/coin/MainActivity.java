@@ -47,12 +47,6 @@ public class MainActivity extends AppCompatActivity {
         price = (Button) findViewById(R.id.button2);
         loadData = (Button) findViewById(R.id.button3);
 
-        PhoneUnlockedReceiver receiver = new PhoneUnlockedReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Intent.ACTION_USER_PRESENT);
-        filter.addAction(Intent.ACTION_SCREEN_OFF);
-        registerReceiver(receiver, filter);
-
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         soundUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE

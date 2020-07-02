@@ -29,7 +29,7 @@ public class MonitorPrice {
         return Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
     }
 
-    public synchronized HashMap<String, String> getPrice(Context context) {
+    public HashMap<String, String> getPrice(Context context) {
         HashMap<String, String> da = new HashMap<>();
         try {
             if (Constant.priceBoughtCoin.size() == 0) {

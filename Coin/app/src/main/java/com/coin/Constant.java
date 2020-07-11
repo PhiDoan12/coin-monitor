@@ -34,7 +34,7 @@ public class Constant {
     private static Gson gson = new Gson();
     public static String REAL_TIME = "0.03";
     private static boolean getOnLocked = false;
-    public static long count = 0;
+    public static final int COUNT_TIME_OUT = 15;
 
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";
@@ -105,9 +105,9 @@ public class Constant {
     }
 
     public static synchronized HashMap<String, String> getPriceBinance() {
-        boolean success = false;
         HashMap<String, String> map = new HashMap<>();
-        while (success == false) {
+        int countTimeOut = 0;
+        while (true) {
             try {
                 System.out.println("getPriceBinance() -> " + url);
                 String dataFromB = MyGETRequest(Constant.url);
@@ -126,7 +126,11 @@ public class Constant {
             } catch (Exception e) {
                 e.printStackTrace();
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(1 * 1000);
+                    if(countTimeOut == COUNT_TIME_OUT){
+                        break;
+                    }
+                    countTimeOut++;
                 } catch (InterruptedException ex) {
                     //ex.printStackTrace();
                 }

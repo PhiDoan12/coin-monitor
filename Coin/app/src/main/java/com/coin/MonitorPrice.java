@@ -50,11 +50,6 @@ public class MonitorPrice {
                 if (coin.equals(Constant.KEY_PERCENT_ABOUT)) {
                     continue;
                 }
-                if (coin.equalsIgnoreCase(Constant.US_STOCK.dow.toString())
-                        || coin.equalsIgnoreCase(Constant.US_STOCK.sandp.toString())
-                        || coin.equalsIgnoreCase(Constant.US_STOCK.nasdaq.toString())) {
-                    continue;
-                }
 
                 Constant.priceBinanceCoin.put(coin, new BigDecimal(priceMap.get(coin)).setScale(5, RoundingMode.HALF_UP));
                 String notifyCoinCode = Constant.notifyCoin.containsKey(coin) ? "N" : "";
@@ -69,24 +64,6 @@ public class MonitorPrice {
                     da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));
                 }
             }
-
-            ////////////////////////
-            for (Constant.US_STOCK us : Constant.US_STOCK.values()) {
-                if (!Constant.priceBoughtCoin.containsKey(us.name().toUpperCase())) {
-                    Constant.priceBoughtCoin.put(us.name().toUpperCase(), new BigDecimal("0"));
-                }
-                if (!Constant.priceStockUs.containsKey(us.name().toUpperCase())) {
-                    continue;
-                }
-                if (Constant.priceStockUs.get(us.name().toUpperCase()).compareTo(Constant.priceBoughtCoin.get(us.name().toUpperCase())) == -1) {
-                    text += Constant.addColor(String.format("%s : %s :%s<br>", us.name().toUpperCase(),
-                            Constant.priceStockUs.get(us.name().toUpperCase()), ""), Constant.RED_COLOR);
-                } else {
-                    text += Constant.addColor(String.format("%s : %s :%s<br>", us.name().toUpperCase(),
-                            Constant.priceStockUs.get(us.name().toUpperCase()), ""), Constant.GREEN_COLOR);
-                }
-            }
-            ///////////////////////
 
             BigDecimal percentIncrese = BigDecimal.ZERO;
             text += "<br>----------Compare To Old Price----------<br><br>";
@@ -133,40 +110,6 @@ public class MonitorPrice {
                     text += "<br>";
                 }
             }
-
-            ////////////////////////
-            for (Constant.US_STOCK us : Constant.US_STOCK.values()) {
-                if (Constant.priceBoughtCoin.get(us.name().toUpperCase()).compareTo(BigDecimal.ZERO) == 0) {
-                    continue;
-                }
-                if (!Constant.priceStockUs.containsKey(us.name().toUpperCase())) {
-                    continue;
-                }
-                BigDecimal caculateP = caculatePercent(Constant.priceStockUs.get(us.name().toUpperCase()), us.name().toUpperCase(), Constant.priceBoughtCoin);
-                String signal = "";
-                if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {
-                    signal = "+";
-                } else {
-                    signal = "-";
-                }
-
-                String coinNameAndBoughtPrice = String.format("%s(%s)", us.name().toUpperCase(), Constant.priceBoughtCoin.get(us.name().toUpperCase()));
-
-                if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {
-                    text += Constant.addColor(String.format("%s%s%s%s",
-                            coinNameAndBoughtPrice,
-                            balanceSpace(coinNameAndBoughtPrice, signal, 20),
-                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.GREEN_COLOR);
-                    text += "<br>";
-                } else {
-                    text += Constant.addColor(String.format("%s%s%s%s",
-                            coinNameAndBoughtPrice,
-                            balanceSpace(coinNameAndBoughtPrice, signal, 20),
-                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.RED_COLOR);
-                    text += "<br>";
-                }
-            }
-            ///////////////////////
 
             text += "-------------------------------------------------------<br>";
             text += Constant.KEY_LOOP + ":" + "2" + "<br>";

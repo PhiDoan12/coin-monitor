@@ -26,26 +26,16 @@ public class Constant {
     public static ConcurrentSkipListMap<String, BigDecimal> priceBinanceCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> priceBoughtCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> notifyCoin = new ConcurrentSkipListMap<>();
-    public static ConcurrentSkipListMap<String, BigDecimal> priceStockUs = new ConcurrentSkipListMap<String, BigDecimal>();
     public static BigDecimal timeDefaultFromUser = new BigDecimal("0");
     public static String RED_COLOR = "#EE0000";
     public static String GREEN_COLOR = "#0fbd49";
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
     public static String REAL_TIME = "0.03";
-    private static boolean getOnLocked = false;
-    public static final int COUNT_TIME_OUT = 15;
+    public static final int COUNT_TIME_OUT = 0;
 
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";
-    }
-
-    public static synchronized boolean getOnLocked() {
-        return getOnLocked;
-    }
-
-    public static synchronized void setOnLocked(boolean getOnLocked) {
-        Constant.getOnLocked = getOnLocked;
     }
 
     public static enum PairCoin {
@@ -60,12 +50,6 @@ public class Constant {
         USD
     }
 
-    public static enum US_STOCK {
-        dow,
-        nasdaq,
-        sandp
-    }
-
     public static synchronized void resetSaveCount() {
         Constant.COUNT_SAVE_BUTTON = 0;
     }
@@ -76,32 +60,6 @@ public class Constant {
 
     public static synchronized int getSaveCount() {
         return Constant.COUNT_SAVE_BUTTON;
-    }
-
-
-    public static void getPriceUsStock() {
-        String url = "https://markets.businessinsider.com/index/";
-        for (US_STOCK name : US_STOCK.values()) {
-            String names = "";
-            switch (name) {
-                case dow:
-                    names = "dow_jones";
-                    break;
-                case sandp:
-                    names = "s&p_500";
-                    break;
-                case nasdaq:
-                    names = "nasdaq_100";
-                    break;
-            }
-            String data = MyGETRequest(url + names);
-            if (StringUtils.isEmpty(data)) {
-                return;
-            }
-            Document document = Jsoup.parse(data);
-            String price = document.select("span[data-format=maximumFractionDigits:2]").first().text();
-            priceStockUs.put(name.name().toUpperCase(), new BigDecimal(price.replace(",", "")));
-        }
     }
 
     public static synchronized HashMap<String, String> getPriceBinance() {

@@ -65,43 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         notificationManager.createNotificationChannel(mChannel);
 
-
-        Thread schedulerGetPriceStockUs = new Thread(() -> {
-            int times = (5 * 60 * 1000) / (4 * 1000);
-            int count = 0;
-            try {
-                Constant.getPriceUsStock();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            while (true) {
-                try {
-                    Constant.resetSaveCount();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                try {
-                    Thread.sleep(4 * 1000);
-                    count++;
-                    if (count >= times) {
-                        Thread scheduler = new Thread(() -> {
-                            try {
-                                Constant.getPriceUsStock();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        });
-                        scheduler.start();
-                        count = 0;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        schedulerGetPriceStockUs.setName("GET US STOCK");
-        schedulerGetPriceStockUs.start();
-
         button.setOnClickListener(v -> {
             Constant.increaseSaveCount();
             if (Constant.getSaveCount() >= 2) {

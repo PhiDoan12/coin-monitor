@@ -95,7 +95,9 @@ public class MonitorPrice {
                 }
 
                 String coinNameAndBoughtPrice = String.format("%s(%s)", coin, Constant.priceBoughtCoin.get(coin));
-
+                if(Constant.notifyCoin.containsKey(coin)){
+                    text += "------------------------------------------------------------<br>";
+                }
                 if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {
                     text += Constant.addColor(String.format("%s%s%s%s",
                             coinNameAndBoughtPrice,
@@ -108,6 +110,9 @@ public class MonitorPrice {
                             balanceSpace(coinNameAndBoughtPrice, signal, 20),
                             signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.RED_COLOR);
                     text += "<br>";
+                }
+                if(Constant.notifyCoin.containsKey(coin)){
+                    text += "------------------------------------------------------------<br>";
                 }
             }
 

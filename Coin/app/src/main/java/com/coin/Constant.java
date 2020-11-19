@@ -32,7 +32,7 @@ public class Constant {
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
     public static String REAL_TIME = "0.03";
-    public static final int COUNT_TIME_OUT = 0;
+    public static final int COUNT_TIME_OUT = 10;
 
     public static String addColor(String text, String color) {
         return "<font color='" + color + "'>" + text + "</font>";

@@ -225,6 +225,13 @@ public class MonitorPrice {
                     //ex.printStackTrace();
                 }
             }
+            // fix missing a field
+            if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT)){
+                Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
+            }
+            if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)){
+                Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
+            }
             br.close();
         } catch (Exception e) {
             e.printStackTrace();

@@ -234,7 +234,7 @@ public class MonitorPrice {
                 Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
             }
             if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)){
-                Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
+                Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("2"));
             }
             br.close();
         } catch (Exception e) {

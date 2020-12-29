@@ -57,9 +57,16 @@
                     android:layout_weight="3"
                     android:text="Price" />
 
+                <Button
+                    android:id="@+id/button8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Astro" />
+
             </TableRow>
 
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

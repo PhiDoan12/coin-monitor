@@ -100,15 +100,19 @@ public class Constant {
     }
 
     public synchronized static BigDecimal getFearAndGreendy(){
-        if(fearAndGreendy == null){
-            String url = "https://api.alternative.me/fng/";
-            String data = MyGETRequest(url);
-            Map<String, Object> map = gson.fromJson(data, Map.class);
-            List index = (List) map.get("data");
-            map = (Map<String, Object>) index.get(0);
-            fearAndGreendy = new BigDecimal(map.get("value").toString());
+        try {
+            if (fearAndGreendy == null) {
+                String url = "https://api.alternative.me/fng/";
+                String data = MyGETRequest(url);
+                Map<String, Object> map = gson.fromJson(data, Map.class);
+                List index = (List) map.get("data");
+                map = (Map<String, Object>) index.get(0);
+                fearAndGreendy = new BigDecimal(map.get("value").toString());
+            }
+            return fearAndGreendy;
+        }catch (Exception ex){
+            return new BigDecimal(0);
         }
-        return fearAndGreendy;
     }
 
     public static String MyGETRequest(String url) {

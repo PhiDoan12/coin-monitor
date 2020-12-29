@@ -195,7 +195,7 @@ public class MonitorPrice {
         return percent;
     }
 
-    public void loadData(Context context) {
+    public synchronized void loadData(Context context) {
         BufferedReader br = null;
         try {
             Constant.priceBoughtCoin.clear();

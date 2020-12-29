@@ -1,5 +1,6 @@
 package com.coin;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Button button;
     Button price;
     Button loadData;
+    Button loadAstrology;
     Thread threadLoop;
     NotificationChannel mChannel;
     Uri soundUri;
@@ -46,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         button = (Button) findViewById(R.id.button);
         price = (Button) findViewById(R.id.button2);
         loadData = (Button) findViewById(R.id.button3);
+        loadAstrology = (Button) findViewById(R.id.button8);
 
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
@@ -82,6 +85,13 @@ public class MainActivity extends AppCompatActivity {
             //onPause = false;
             setOnPause(false);
             getPrice();
+        });
+
+        loadAstrology.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+            intent.setAction(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            startActivity(intent);
         });
 
         loadData.setOnClickListener(v -> {

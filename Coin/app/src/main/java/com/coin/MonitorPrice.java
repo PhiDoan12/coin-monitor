@@ -116,6 +116,10 @@ public class MonitorPrice {
                 }
             }
 
+            /****************************/
+            text += "FearAndGreendy => ("+Constant.getFearAndGreendy()+") <br>";
+            /****************************/
+
             text += "-------------------------------------------------------<br>";
             text += Constant.KEY_LOOP + ":" + "2" + "<br>";
             text += Constant.KEY_PERCENT + ":" + Constant.priceBoughtCoin.get(Constant.KEY_PERCENT).intValue() + "<br>";

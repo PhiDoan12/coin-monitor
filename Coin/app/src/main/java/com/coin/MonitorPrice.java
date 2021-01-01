@@ -121,7 +121,7 @@ public class MonitorPrice {
             /****************************/
 
             text += "-------------------------------------------------------<br>";
-            text += Constant.KEY_LOOP + ":" + "2" + "<br>";
+            text += Constant.KEY_LOOP + ":" + Constant.loopTIme.intValue() + "<br>";
             text += Constant.KEY_PERCENT + ":" + Constant.priceBoughtCoin.get(Constant.KEY_PERCENT).intValue() + "<br>";
             text += Constant.KEY_PERCENT_ABOUT + ":" +
                     (Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT) ?
@@ -236,6 +236,7 @@ public class MonitorPrice {
             if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)){
                 Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("2"));
             }
+            Constant.loopTIme = Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
             br.close();
         } catch (Exception e) {
             e.printStackTrace();

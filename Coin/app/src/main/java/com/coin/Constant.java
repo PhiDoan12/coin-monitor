@@ -27,6 +27,7 @@ public class Constant {
     public static ConcurrentSkipListMap<String, BigDecimal> priceBinanceCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> priceBoughtCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> notifyCoin = new ConcurrentSkipListMap<>();
+    public static BigDecimal loopTIme = null;
     public static BigDecimal timeDefaultFromUser = new BigDecimal("0");
     public static String RED_COLOR = "#EE0000";
     public static String GREEN_COLOR = "#0fbd49";

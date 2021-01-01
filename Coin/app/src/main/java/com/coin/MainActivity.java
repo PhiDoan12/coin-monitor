@@ -191,27 +191,24 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void notifyABC(String price, Boolean disable) {
-        Thread t = new Thread(() -> {
-            Notification notification = new Notification.Builder(getApplicationContext())
-                    .setContentTitle("MonitorPrice")
-                    .setContentText("Coin increase: " + price)
-                    .setAutoCancel(true)
-                    .setVibrate(pattern)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setPriority(Notification.PRIORITY_HIGH)
-                    .setChannelId(CHANNEL_ID)
-                    .setSound(soundUri, audioAttributes)
-                    .build();
+        Notification notification = new Notification.Builder(getApplicationContext())
+                .setContentTitle("MonitorPrice")
+                .setContentText("Coin increase: " + price)
+                .setAutoCancel(true)
+                .setVibrate(pattern)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setPriority(Notification.PRIORITY_HIGH)
+                .setChannelId(CHANNEL_ID)
+                .setSound(soundUri, audioAttributes)
+                .build();
 
-            if (disable == true) {
-                mChannel.setVibrationPattern(new long[]{0L});
-            } else {
-                mChannel.setVibrationPattern(pattern);
-            }
+        if (disable == true) {
+            mChannel.setVibrationPattern(new long[]{0L});
+        } else {
+            mChannel.setVibrationPattern(pattern);
+        }
 
-            notificationManager.notify(0, notification);
-        });
-        t.start();
+        notificationManager.notify(0, notification);
     }
 
     private synchronized boolean getOnPause() {

@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
@@ -77,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 monitorPrice.saveData(getApplicationContext(), textsss);
                 Constant.resetSaveCount();
-                getPrice();
+                new DownloadFilesTask().execute();
             }
         });
 
         price.setOnClickListener(v -> {
             //onPause = false;
             setOnPause(false);
-            getPrice();
+            new DownloadFilesTask().execute();
         });
 
         loadAstrology.setOnClickListener(v -> {
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getPrice();
+        new DownloadFilesTask().execute();
         Toast.makeText(getApplicationContext(), "Loading!",
                 Toast.LENGTH_SHORT).show();
     }
@@ -118,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //onPause = false;
         setOnPause(false);
-        getPrice();
+        new DownloadFilesTask().execute();
     }
 
     @Override
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     private synchronized void getPrice() {
-
         if (threadLoop != null && threadLoop.isAlive()) {
             new Thread(() -> {
                 threadLoop.interrupt();
@@ -217,5 +217,22 @@ public class MainActivity extends AppCompatActivity {
 
     private synchronized void setOnPause(boolean onPause) {
         this.onPause = onPause;
+    }
+
+    private class DownloadFilesTask extends AsyncTask<Void, Void, Void> {
+        protected void onProgressUpdate(Integer... progress) {
+            System.out.println("Downloaded onProgressUpdate");
+        }
+
+        protected void onPostExecute(Long result) {
+            System.out.println("Downloaded " + result + " bytes");
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.O)
+        @Override
+        protected Void doInBackground(Void... voids) {
+            getPrice();
+            return null;
+        }
     }
 }

@@ -78,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
                 }
                 monitorPrice.saveData(getApplicationContext(), textsss);
                 Constant.resetSaveCount();
-                new DownloadFilesTask().execute();
+                getPrice();
             }
         });
 
         price.setOnClickListener(v -> {
             //onPause = false;
             setOnPause(false);
-            new DownloadFilesTask().execute();
+            getPrice();
         });
 
         loadAstrology.setOnClickListener(v -> {
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        new DownloadFilesTask().execute();
+        getPrice();
         Toast.makeText(getApplicationContext(), "Loading!",
                 Toast.LENGTH_SHORT).show();
     }
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         //onPause = false;
         setOnPause(false);
-        new DownloadFilesTask().execute();
+        getPrice();
     }
 
     @Override
@@ -217,22 +217,5 @@ public class MainActivity extends AppCompatActivity {
 
     private synchronized void setOnPause(boolean onPause) {
         this.onPause = onPause;
-    }
-
-    private class DownloadFilesTask extends AsyncTask<Void, Void, Void> {
-        protected void onProgressUpdate(Integer... progress) {
-            System.out.println("Downloaded onProgressUpdate");
-        }
-
-        protected void onPostExecute(Long result) {
-            System.out.println("Downloaded " + result + " bytes");
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.O)
-        @Override
-        protected Void doInBackground(Void... voids) {
-            getPrice();
-            return null;
-        }
     }
 }

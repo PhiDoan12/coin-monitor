@@ -24,7 +24,12 @@ public class Constant {
     public static String url = "https://api.binance.com/api/v3/ticker/price";
     public static Gson gson = new Gson();
     public static final int COUNT_TIME_OUT = 10;
+    public static int indexNotification = 0;
 
+    public static synchronized int getNotificationIndex(){
+        indexNotification++;
+        return indexNotification;
+    }
     public enum PairCoin {
         BTC,
         ETH,

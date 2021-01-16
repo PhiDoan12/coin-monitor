@@ -101,6 +101,8 @@ public class MainActivity extends AppCompatActivity {
 
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponentName);
         builder.setOverrideDeadline( 1000); // delay to start the job
+        builder.setRequiresBatteryNotLow(true);
+        builder.setRequiresDeviceIdle(true);
 
         // Start the job
         JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);

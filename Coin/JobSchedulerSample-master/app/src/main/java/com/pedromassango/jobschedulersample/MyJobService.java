@@ -125,12 +125,11 @@ public class MyJobService extends JobService {
             while (!stopThread){
                 try {
                     if(callPrice() == true){
-                        notificationManager.notify(0, notification);
+                        notificationManager.notify((int) (System.currentTimeMillis() / 10000), notification);
                     }
                     Thread.sleep(Constant.loop * 60000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                    stopSelf();
                     log("Thread interrupted");
                 }
             }

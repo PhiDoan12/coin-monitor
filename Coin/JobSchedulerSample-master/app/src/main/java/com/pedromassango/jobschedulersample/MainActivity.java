@@ -88,6 +88,11 @@ public class MainActivity extends AppCompatActivity {
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "MyApp::MyWakelockTag");
+
+        if(wakeLock.isHeld()){
+            System.out.println("HOLE EJHAJHS");
+            wakeLock.release();
+        }
         wakeLock.acquire();
         markPrice.setText(Constant.markPrice.toString());
         Toast.makeText(getApplicationContext(), "Updated Price => " + Constant.markPrice.toString(),

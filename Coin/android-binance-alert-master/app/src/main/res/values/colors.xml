@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#7258FB</color>
+    <color name="colorPrimaryDark">#5D47D4</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="colorRowBgBlue">#1E80F0</color>
+    <color name="colorRowBgViolet">#9C27B0</color>
+    <color name="colorRowBgGreen">#33572B</color>
+    <color name="colorRowBgGrey">#2B4B5D</color>
+    <color name="colorBlur">#F3F4F5</color>
+    <color name="colorBotNav">#312C4B</color>
+    <color name="colorTextGreen">#29C117</color>
+    <color name="colorGraphLine">#1FBD18</color>
+    <color name="colorGraphFiller">#92fc8c</color>
+
+</resources>

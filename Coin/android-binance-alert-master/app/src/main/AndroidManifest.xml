@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.trien.bnalert">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <permission android:name="com.trien.bnalert.persistence.READ_WRITE" />
+
+    <application
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name="com.trien.bnalert.ApplicationController"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.trien.bnalert.MainActivity"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- <service android:name=".MyService" /> -->
+
+        <activity android:name="com.trien.bnalert.NewAlertActivity" />
+
+        <!-- AlarmManagerBroadcastReceiver Broadcast receiver to schedule alarm/job-->
+        <!--Notice that in the manifest, the boot receiver is set to android:enabled="false".
+        This means that the receiver will not be called unless the application explicitly enables it.
+        This prevents the boot receiver from being called unnecessarily. You can enable a receiver
+        programmatically in the java/kotlin codes -->
+        <receiver android:name="com.trien.bnalert.AlarmManagerBroadcastReceiver"
+            android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
+        <activity android:name="com.trien.bnalert.EditAlertActivity"></activity>
+    </application>
+
+</manifest>

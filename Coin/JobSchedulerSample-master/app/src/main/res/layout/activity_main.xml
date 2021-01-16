@@ -23,6 +23,13 @@
         android:text="BTC" />
 
     <EditText
+        android:id="@+id/markPriceText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName" />
+
+    <EditText
         android:id="@+id/percent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

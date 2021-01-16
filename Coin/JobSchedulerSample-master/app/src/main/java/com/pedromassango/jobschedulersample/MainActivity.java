@@ -5,6 +5,7 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.v4.app.JobIntentService;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Text;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         TextView loop = findViewById(R.id.loop);
         TextView percent = findViewById(R.id.percent);
         TextView markPrice = findViewById(R.id.textView);
+        TextView markPriceText = findViewById(R.id.markPriceText);
+
         if(StringUtils.isEmpty(coinName.getText().toString())){
             Toast.makeText(getApplicationContext(), "Coin Name Fail!",
                     Toast.LENGTH_SHORT).show();
@@ -55,20 +59,25 @@ public class MainActivity extends AppCompatActivity {
         Constant.percent = Integer.parseInt(percent.getText().toString());
         Constant.loop = Integer.parseInt(loop.getText().toString());
         Constant.coinName = coinName.getText().toString();
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                Constant.updateMarkPrice();
-            }
-        };
-        thread.start();
+
+        if(!markPriceText.getText().toString().isEmpty()){
+            Constant.markPrice = new BigDecimal(markPriceText.getText().toString());
+        }else{
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    Constant.updateMarkPrice();
+                }
+            };
+            thread.start();
+        }
+
         while (true){
             SystemClock.sleep(2000);
             if(Constant.markPrice != null){
                 break;
             }
         }
-        markPrice.setText(Constant.markPrice.toString());
 
         if(Constant.firstTime == true){
             markPrice.setText(Constant.markPrice.toString());
@@ -76,6 +85,11 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyApp::MyWakelockTag");
+        wakeLock.acquire();
+        markPrice.setText(Constant.markPrice.toString());
         Toast.makeText(getApplicationContext(), "Updated Price => " + Constant.markPrice.toString(),
                 Toast.LENGTH_SHORT).show();
         Constant.firstTime = true;

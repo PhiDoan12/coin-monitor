@@ -128,7 +128,6 @@ public class MyJobService extends JobService {
                         notificationManager.notify(0, notification);
                     }
                     Thread.sleep(Constant.loop * 60000);
-                    //Thread.sleep(Constant.loop * 3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     stopSelf();
@@ -139,8 +138,6 @@ public class MyJobService extends JobService {
 
         private boolean callPrice(){
             HashMap<String, String> priceMap = Constant.getPriceBinance();
-            // just for testing
-            priceMap.put("BTC", "4726");
             BigDecimal range = new BigDecimal(priceMap.get(Constant.coinName))
                     .subtract(Constant.markPrice);
             int CurrentPercent = range.divide(Constant.markPrice, 2, RoundingMode.HALF_UP).multiply(new BigDecimal("100")).intValue();

@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProviders;
@@ -90,6 +91,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         mContext = context;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,7 +101,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         prefs = mContext.getSharedPreferences("com.trien.bnalert", MODE_PRIVATE);
 
         alarmManager = (AlarmManager) mContext.getSystemService(ALARM_SERVICE);
-
+        alarmManager.setAndAllowWhileIdle();
         recyclerView = rootView.findViewById(R.id.recycler_alert);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mAlertAdapter = new AlertAdapter(mContext, this);
@@ -237,6 +239,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         builder.create().show();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void createNewAlert(Context context, Alert alert) {
 
         createNotificationChannel(context, String.valueOf(alert.getId()));
@@ -268,6 +271,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         // Also, if we use ELAPSED_REALTIME instead of ELAPSED_REALTIME_WAKEUP, users may find it annoying
         // because within this app features, they will receive tons of notifications at the same time once
         // the phones wake up.
+        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
                 (long) alert.getInterval(), pendingIntent);
     }

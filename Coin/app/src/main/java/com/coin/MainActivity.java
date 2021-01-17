@@ -133,15 +133,6 @@ public class MainActivity extends AppCompatActivity {
         Constant.priceBoughtCoin.put(Constant.KEY_LOOP, Constant.timeDefaultFromUser);
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        System.out.println("onStop");
-        //onPause = true;
-        setOnPause(true);
-        Constant.priceBoughtCoin.put(Constant.KEY_LOOP, Constant.timeDefaultFromUser);
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     private synchronized void getPrice() {
         if (threadLoop != null && threadLoop.isAlive()) {

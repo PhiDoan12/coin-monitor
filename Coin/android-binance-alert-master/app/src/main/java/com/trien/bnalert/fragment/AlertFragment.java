@@ -101,7 +101,6 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         prefs = mContext.getSharedPreferences("com.trien.bnalert", MODE_PRIVATE);
 
         alarmManager = (AlarmManager) mContext.getSystemService(ALARM_SERVICE);
-        alarmManager.setAndAllowWhileIdle();
         recyclerView = rootView.findViewById(R.id.recycler_alert);
         recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mAlertAdapter = new AlertAdapter(mContext, this);
@@ -119,6 +118,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         return rootView;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onStart() {
         super.onStart();
@@ -148,6 +148,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
        // new ReadFromDb(mContext).execute();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -271,7 +272,6 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         // Also, if we use ELAPSED_REALTIME instead of ELAPSED_REALTIME_WAKEUP, users may find it annoying
         // because within this app features, they will receive tons of notifications at the same time once
         // the phones wake up.
-        alarmManager.setAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
         alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(),
                 (long) alert.getInterval(), pendingIntent);
     }
@@ -299,6 +299,7 @@ public class AlertFragment extends Fragment implements AlertAdapter.OnCustomClic
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void reScheduleAllAlertsOnceUpgradeApp(List<Alert> alerts) {
         if (!alerts.isEmpty()) {
             // in case users upgrade to newer versions of the app, then recreate all alerts based on records in the database

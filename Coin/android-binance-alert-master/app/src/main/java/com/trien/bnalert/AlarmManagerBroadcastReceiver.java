@@ -176,7 +176,6 @@ public class AlarmManagerBroadcastReceiver extends BroadcastReceiver {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Timber.d("trien4", error.getMessage());
-
             }
         });
     }

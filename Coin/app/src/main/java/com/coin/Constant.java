@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.TimeUnit;
 
 public class Constant {
     public static final String KEY_LOOP = "LOOP";
@@ -71,7 +72,8 @@ public class Constant {
         while (true) {
             try {
                 System.out.println("getPriceBinance() -> " + url);
-                String dataFromB = MyGETRequest(Constant.url);
+                //String dataFromB = MyGETRequest(Constant.url);
+                String dataFromB = getJsonData(Constant.url);
                 if (StringUtils.isEmpty(dataFromB)) {
                     throw new Exception("->> Binance return empty");
                 }
@@ -104,7 +106,8 @@ public class Constant {
         try {
             if (fearAndGreendy == null) {
                 String url = "https://api.alternative.me/fng/";
-                String data = MyGETRequest(url);
+                //String data = MyGETRequest(url);
+                String data = getJsonData(url);
                 Map<String, Object> map = gson.fromJson(data, Map.class);
                 List index = (List) map.get("data");
                 map = (Map<String, Object>) index.get(0);
@@ -116,25 +119,36 @@ public class Constant {
         }
     }
 
-    public static String MyGETRequest(String url) {
+//    public static String MyGETRequest(String url) {
+//        try {
+//            URL urlForGetRequest = new URL(url);
+//            String readLine = null;
+//            HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+//            conection.setRequestMethod("GET");
+//            int responseCode = conection.getResponseCode();
+//            if (responseCode == HttpURLConnection.HTTP_OK) {
+//                BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
+//                StringBuffer response = new StringBuffer();
+//                while ((readLine = in.readLine()) != null) {
+//                    response.append(readLine);
+//                }
+//                in.close();
+//                return response.toString();
+//            } else {
+//                System.out.println("GET NOT WORKED -> " + Constant.url);
+//                return "";
+//            }
+//        } catch (Exception e) {
+//            return "";
+//        }
+//    }
+
+    public static String getJsonData(String url) {
         try {
-            URL urlForGetRequest = new URL(url);
-            String readLine = null;
-            HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
-            conection.setRequestMethod("GET");
-            int responseCode = conection.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conection.getInputStream()));
-                StringBuffer response = new StringBuffer();
-                while ((readLine = in.readLine()) != null) {
-                    response.append(readLine);
-                }
-                in.close();
-                return response.toString();
-            } else {
-                System.out.println("GET NOT WORKED -> " + Constant.url);
-                return "";
-            }
+            String json = Jsoup.connect(url)
+                    .timeout(1 * 60000)
+                    .ignoreContentType(true).execute().body();
+            return json;
         } catch (Exception e) {
             return "";
         }

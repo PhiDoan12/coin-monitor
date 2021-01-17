@@ -85,24 +85,15 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "MyApp::MyWakelockTag");
 
-        if(wakeLock.isHeld()){
-            System.out.println("HOLE EJHAJHS");
-            wakeLock.release();
-        }
-        wakeLock.acquire();
         markPrice.setText(Constant.markPrice.toString());
         Toast.makeText(getApplicationContext(), "Updated Price => " + Constant.markPrice.toString(),
                 Toast.LENGTH_SHORT).show();
         Constant.firstTime = true;
 
         JobInfo.Builder builder = new JobInfo.Builder(0, serviceComponentName);
-        builder.setOverrideDeadline( 1000); // delay to start the job
-        builder.setRequiresBatteryNotLow(true);
-        builder.setRequiresDeviceIdle(true);
+        builder.setOverrideDeadline(Constant.loop * 60000);
+        builder.setMinimumLatency(Constant.loop * 60000);
 
         // Start the job
         JobScheduler scheduler = (JobScheduler) getSystemService(Context.JOB_SCHEDULER_SERVICE);

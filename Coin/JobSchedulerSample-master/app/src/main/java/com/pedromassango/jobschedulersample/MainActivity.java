@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         }
         Constant.percent = Integer.parseInt(percent.getText().toString());
         Constant.loop = Integer.parseInt(loop.getText().toString());
-        Constant.coinName = coinName.getText().toString();
+        Constant.coinName = coinName.getText().toString().toUpperCase();
 
         if(!markPriceText.getText().toString().isEmpty()){
             Constant.markPrice = new BigDecimal(markPriceText.getText().toString());

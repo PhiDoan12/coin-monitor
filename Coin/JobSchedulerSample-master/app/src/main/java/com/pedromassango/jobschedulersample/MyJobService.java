@@ -137,6 +137,9 @@ public class MyJobService extends JobService {
 
         private boolean callPrice(){
             HashMap<String, String> priceMap = Constant.getPriceBinance();
+            if(priceMap.isEmpty()){
+                return false;
+            }
             BigDecimal range = new BigDecimal(priceMap.get(Constant.coinName))
                     .subtract(Constant.markPrice);
             int CurrentPercent = range.divide(Constant.markPrice, 2, RoundingMode.HALF_UP).multiply(new BigDecimal("100")).intValue();

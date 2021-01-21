@@ -104,6 +104,9 @@ public class Constant {
 
     public static void updateMarkPrice(){
         HashMap<String, String> price = Constant.getPriceBinance();
+        if(price.isEmpty()){
+            return;
+        }
         Constant.markPrice = new BigDecimal(price.get(Constant.coinName));
     }
 }

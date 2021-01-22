@@ -109,8 +109,16 @@ public class MyJobService extends JobService {
             mChannel.setLightColor(Color.YELLOW);
             mChannel.enableLights(true);
             mChannel.enableVibration(true);
+            mChannel.setVibrationPattern(pattern);
+
+            NotificationChannel mChannelAlert;
+            String CHANNEL_ID_2 = "coin.price.notify.alert.2";
+            mChannelAlert = new NotificationChannel(CHANNEL_ID_2, CHANNEL_ID_2, NotificationManager.IMPORTANCE_HIGH);
+            mChannelAlert.enableVibration(false);
 
             notificationManager.createNotificationChannel(mChannel);
+            notificationManager.createNotificationChannel(mChannelAlert);
+
             Notification notification = new Notification.Builder(getApplicationContext())
                     .setContentTitle("MonitorPrice")
                     .setContentText("*****Coin Alert****")
@@ -121,11 +129,26 @@ public class MyJobService extends JobService {
                     .setChannelId(CHANNEL_ID)
                     .setSound(soundUri, audioAttributes)
                     .build();
-            mChannel.setVibrationPattern(pattern);
+
             while (!stopThread){
                 try {
                     if(callPrice() == true){
                         notificationManager.notify(0, notification);
+                    }else{
+                        if(Constant.countShowAlertPrice >= Constant.numberShowPrice) {
+                            Notification notificationAlert = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle("MonitorPrice")
+                                    .setContentText(Constant.priceNotificationAlert)
+                                    .setAutoCancel(true)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setChannelId(CHANNEL_ID_2)
+                                    .build();
+                            notificationManager.notify(0, notificationAlert);
+                            Constant.countShowAlertPrice = 0;
+                            continue;
+                        }else{
+                            Constant.countShowAlertPrice++;
+                        }
                     }
                     Thread.sleep(Constant.loop * 60000);
                 } catch (InterruptedException e) {
@@ -146,7 +169,10 @@ public class MyJobService extends JobService {
             System.out.println("CurrentPercent:" + CurrentPercent);
             if(Constant.percent > 0 && CurrentPercent >= Constant.percent){
                 return true;
-            }else return Constant.percent < 0 && CurrentPercent <= Constant.percent;
+            }else {
+                Constant.priceNotificationAlert = Constant.coinName + ":" + priceMap.get(Constant.coinName);
+                return Constant.percent < 0 && CurrentPercent <= Constant.percent;
+            }
         }
     }
 }

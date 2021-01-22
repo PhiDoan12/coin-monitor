@@ -13,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 public class Constant {
     public static String coinName = "";
@@ -24,22 +23,11 @@ public class Constant {
     public static String url = "https://api.binance.com/api/v3/ticker/price";
     public static Gson gson = new Gson();
     public static final int COUNT_TIME_OUT = 10;
-    public static int indexNotification = 0;
-
-    public static synchronized int getNotificationIndex(){
-        indexNotification++;
-        return indexNotification;
-    }
+    public static String priceNotificationAlert = "";
+    public static int countShowAlertPrice = 0;
+    public static int numberShowPrice = 3;
     public enum PairCoin {
-        BTC,
-        ETH,
-        NEO,
-        XRP,
-        LTC,
-        BCH,
-        BNB,
-        USDT,
-        USD
+        USDT
     }
 
     public static HashMap<String, String> getPriceBinance() {

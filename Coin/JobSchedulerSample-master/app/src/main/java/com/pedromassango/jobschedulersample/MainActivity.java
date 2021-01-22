@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         TextView percent = findViewById(R.id.percent);
         TextView markPrice = findViewById(R.id.textView);
         TextView markPriceText = findViewById(R.id.markPriceText);
+        TextView numberShowPrice = findViewById(R.id.numberShowPrice);
 
         if(StringUtils.isEmpty(coinName.getText().toString())){
             Toast.makeText(getApplicationContext(), "Coin Name Fail!",
@@ -56,9 +57,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        if(StringUtils.isEmpty(numberShowPrice.getText().toString())){
+            Toast.makeText(getApplicationContext(), "Number Show Price Fail!",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Constant.percent = Integer.parseInt(percent.getText().toString());
         Constant.loop = Integer.parseInt(loop.getText().toString());
         Constant.coinName = coinName.getText().toString().toUpperCase();
+        Constant.numberShowPrice = Integer.parseInt(numberShowPrice.getText().toString());
 
         if(!markPriceText.getText().toString().isEmpty()){
             Constant.markPrice = new BigDecimal(markPriceText.getText().toString());

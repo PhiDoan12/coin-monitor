@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.reflect.TypeToken;
 
@@ -144,10 +145,9 @@ public class MyJobService extends JobService {
                                 .build();
                         notificationManager.notify(1, notificationAlert);
                     }
-                    Thread.sleep(Constant.loop * 60000);
-                } catch (InterruptedException e) {
+                    SystemClock.sleep(Constant.loop * 60000);
+                } catch (Exception e) {
                     e.printStackTrace();
-                    log("Thread interrupted");
                 }
             }
         }
@@ -164,7 +164,7 @@ public class MyJobService extends JobService {
             if(Constant.percent > 0 && CurrentPercent >= Constant.percent){
                 return true;
             }else {
-                Constant.priceNotificationAlert = Constant.coinName + ":" + priceMap.get(Constant.coinName);
+                Constant.priceNotificationAlert = Constant.coinName + ":" + priceMap.get(Constant.coinName) + " ("+Constant.getCount()+")";
                 return Constant.percent < 0 && CurrentPercent <= Constant.percent;
             }
         }

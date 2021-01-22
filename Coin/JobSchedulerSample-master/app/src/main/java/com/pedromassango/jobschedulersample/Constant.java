@@ -24,6 +24,14 @@ public class Constant {
     public static Gson gson = new Gson();
     public static final int COUNT_TIME_OUT = 10;
     public static String priceNotificationAlert = "";
+    private static long countNotification = 0;
+
+    public static String getCount(){
+        if(countNotification >= Long.MAX_VALUE - 1){
+            countNotification = 0;
+        }
+        return "" + countNotification++;
+    }
     public enum PairCoin {
         USDT
     }

@@ -142,7 +142,7 @@ public class MyJobService extends JobService {
                                 .setSmallIcon(R.mipmap.ic_launcher)
                                 .setChannelId(CHANNEL_ID_2)
                                 .build();
-                        notificationManager.notify(0, notificationAlert);
+                        notificationManager.notify(1, notificationAlert);
                     }
                     Thread.sleep(Constant.loop * 60000);
                 } catch (InterruptedException e) {

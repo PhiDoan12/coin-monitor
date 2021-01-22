@@ -135,20 +135,14 @@ public class MyJobService extends JobService {
                     if(callPrice() == true){
                         notificationManager.notify(0, notification);
                     }else{
-                        if(Constant.countShowAlertPrice >= Constant.numberShowPrice) {
-                            Notification notificationAlert = new Notification.Builder(getApplicationContext())
-                                    .setContentTitle("MonitorPrice")
-                                    .setContentText(Constant.priceNotificationAlert)
-                                    .setAutoCancel(true)
-                                    .setSmallIcon(R.mipmap.ic_launcher)
-                                    .setChannelId(CHANNEL_ID_2)
-                                    .build();
-                            notificationManager.notify(0, notificationAlert);
-                            Constant.countShowAlertPrice = 0;
-                            continue;
-                        }else{
-                            Constant.countShowAlertPrice++;
-                        }
+                        Notification notificationAlert = new Notification.Builder(getApplicationContext())
+                                .setContentTitle("MonitorPrice")
+                                .setContentText(Constant.priceNotificationAlert)
+                                .setAutoCancel(true)
+                                .setSmallIcon(R.mipmap.ic_launcher)
+                                .setChannelId(CHANNEL_ID_2)
+                                .build();
+                        notificationManager.notify(0, notificationAlert);
                     }
                     Thread.sleep(Constant.loop * 60000);
                 } catch (InterruptedException e) {

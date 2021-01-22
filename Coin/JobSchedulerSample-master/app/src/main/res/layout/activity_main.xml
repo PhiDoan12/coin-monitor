@@ -45,14 +45,6 @@
         android:inputType="textPersonName"
         android:text="2" />
 
-    <EditText
-        android:id="@+id/numberShowPrice"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="3" />
-
     <TextView
         android:id="@+id/tv_job_state"
         android:layout_width="wrap_content"

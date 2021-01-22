@@ -24,8 +24,6 @@ public class Constant {
     public static Gson gson = new Gson();
     public static final int COUNT_TIME_OUT = 10;
     public static String priceNotificationAlert = "";
-    public static int countShowAlertPrice = 0;
-    public static int numberShowPrice = 3;
     public enum PairCoin {
         USDT
     }

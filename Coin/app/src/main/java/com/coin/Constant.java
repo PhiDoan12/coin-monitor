@@ -5,19 +5,13 @@ import com.google.gson.reflect.TypeToken;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.TimeUnit;
 
 public class Constant {
     public static final String KEY_LOOP = "LOOP";
@@ -90,7 +84,7 @@ public class Constant {
                 e.printStackTrace();
                 try {
                     Thread.sleep(1 * 1000);
-                    if(countTimeOut == COUNT_TIME_OUT){
+                    if (countTimeOut == COUNT_TIME_OUT) {
                         break;
                     }
                     countTimeOut++;
@@ -102,7 +96,7 @@ public class Constant {
         return map;
     }
 
-    public synchronized static BigDecimal getFearAndGreendy(){
+    public synchronized static BigDecimal getFearAndGreendy() {
         try {
             if (fearAndGreendy == null) {
                 String url = "https://api.alternative.me/fng/";
@@ -114,7 +108,7 @@ public class Constant {
                 fearAndGreendy = new BigDecimal(map.get("value").toString());
             }
             return fearAndGreendy;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             return new BigDecimal(0);
         }
     }

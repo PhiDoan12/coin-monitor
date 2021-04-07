@@ -95,7 +95,7 @@ public class MonitorPrice {
                 }
 
                 String coinNameAndBoughtPrice = String.format("%s(%s)", coin, Constant.priceBoughtCoin.get(coin));
-                if(Constant.notifyCoin.containsKey(coin)){
+                if (Constant.notifyCoin.containsKey(coin)) {
                     text += "------------------------------------------------------------<br>";
                 }
                 if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {
@@ -111,13 +111,13 @@ public class MonitorPrice {
                             signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.RED_COLOR);
                     text += "<br>";
                 }
-                if(Constant.notifyCoin.containsKey(coin)){
+                if (Constant.notifyCoin.containsKey(coin)) {
                     text += "------------------------------------------------------------<br>";
                 }
             }
 
             /****************************/
-            text += "FearAndGreendy => ("+Constant.getFearAndGreendy()+") <br>";
+            text += "FearAndGreendy => (" + Constant.getFearAndGreendy() + ") <br>";
             /****************************/
 
             text += "-------------------------------------------------------<br>";
@@ -230,10 +230,10 @@ public class MonitorPrice {
                 }
             }
             // fix missing a field
-            if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT)){
+            if (!Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT)) {
                 Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
             }
-            if(!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)){
+            if (!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)) {
                 Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("2"));
             }
             Constant.loopTIme = Constant.priceBoughtCoin.get(Constant.KEY_LOOP);

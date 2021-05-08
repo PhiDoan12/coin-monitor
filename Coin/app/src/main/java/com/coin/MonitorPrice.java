@@ -53,12 +53,18 @@ public class MonitorPrice {
 
                 Constant.priceBinanceCoin.put(coin, new BigDecimal(priceMap.get(coin)).setScale(5, RoundingMode.HALF_UP));
                 String notifyCoinCode = Constant.notifyCoin.containsKey(coin) ? "N" : "";
+                if (Constant.notifyCoin.containsKey(coin)) {
+                    text += "------------------------------------------------------------<br>";
+                }
                 if (new BigDecimal(priceMap.get(coin)).compareTo(Constant.priceBoughtCoin.get(coin)) == -1) {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.RED_COLOR);
                 } else {
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
                             Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.GREEN_COLOR);
+                }
+                if (Constant.notifyCoin.containsKey(coin)) {
+                    text += "------------------------------------------------------------<br>";
                 }
                 if (Constant.notifyCoin.containsKey(coin)) {
                     da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));

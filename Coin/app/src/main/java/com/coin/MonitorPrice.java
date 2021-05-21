@@ -111,10 +111,11 @@ public class MonitorPrice {
                     coinDropMost = new TakeIncreaseAmount();
                     coinDropMost.setPrice(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
                     coinDropMost.setSymbol(coin);
-                    if (Constant.notifyCoin.containsKey(coin)) {
-                        coinDropMost.setCoinBuySymbol(coin);
-                        coinDropMost.setPriceCoinBuy(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
-                    }
+                }
+
+                if (Constant.notifyCoin.containsKey(coin)) {
+                    coinDropMost.setCoinBuySymbol(coin);
+                    coinDropMost.setPriceCoinBuy(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
                 }
 
                 if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {

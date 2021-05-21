@@ -74,6 +74,8 @@ public class MonitorPrice {
             BigDecimal percentIncrese = BigDecimal.ZERO;
             text += "<br>----------Compare To Old Price----------<br><br>";
 
+            TakeIncreaseAmount coinDropMost = null;
+
             for (String coin : Constant.priceBinanceCoin.keySet()) {
                 if (Constant.priceBoughtCoin.get(coin).compareTo(BigDecimal.ZERO) == 0) {
                     continue;
@@ -116,6 +118,24 @@ public class MonitorPrice {
                             balanceSpace(coinNameAndBoughtPrice, signal, 20),
                             signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.RED_COLOR);
                     text += "<br>";
+
+                    // set coin most drop than all.
+                    if(coinDropMost == null){
+                        coinDropMost = new TakeIncreaseAmount();
+                        coinDropMost.setPrice(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
+                        coinDropMost.setSymbol(coin);
+                        if (Constant.notifyCoin.containsKey(coin)) {
+                            coinDropMost.setCoinBuySymbol(coin);
+                            coinDropMost.setPriceCoinBuy(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
+                        }
+                    } else if(caculateP.setScale(2, RoundingMode.HALF_UP).compareTo(new BigDecimal(coinDropMost.getPrice())) == -1){
+                        coinDropMost.setPrice(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
+                        coinDropMost.setSymbol(coin);
+                        if (Constant.notifyCoin.containsKey(coin)) {
+                            coinDropMost.setCoinBuySymbol(coin);
+                            coinDropMost.setPriceCoinBuy(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
+                        }
+                    }
                 }
                 if (Constant.notifyCoin.containsKey(coin)) {
                     text += "------------------------------------------------------------<br>";
@@ -123,7 +143,16 @@ public class MonitorPrice {
             }
 
             /****************************/
-            text += "FearAndGreendy => (" + Constant.getFearAndGreendy() + ") <br>";
+            text += "FearAndGreendy => (" + Constant.getFearAndGreendy().getValue() + ") => " + Constant.getFearAndGreendy().getStatus()+ " <br>";
+            /****************************/
+
+            /****************************/
+            if(coinDropMost.getCoinBuySymbol() != null){
+                BigDecimal increasePercent = new BigDecimal(coinDropMost.getPriceCoinBuy()).subtract(new BigDecimal(coinDropMost.getPrice()));
+                if(increasePercent.compareTo(new BigDecimal("2")) == 1){
+                    text += Constant.addColor("IF IN COIN ( "+coinDropMost.getSymbol()+" ) INCREASE (" + increasePercent.toPlainString()  + "%)", Constant.GREEN_COLOR) +" <br>";
+                }
+            }
             /****************************/
 
             text += "-------------------------------------------------------<br>";
@@ -133,7 +162,6 @@ public class MonitorPrice {
                     (Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT) ?
                             Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT).intValue() : "0")
                     + "<br>";
-
 
             System.out.println("Percent:" + percentIncrese);
             da.put("DA", text);
@@ -162,7 +190,7 @@ public class MonitorPrice {
                 }
                 return da;
             }
-            // if set < 0 else set >\0
+            // if set < 0 else set > 0
             if (Constant.priceBoughtCoin.get(Constant.KEY_PERCENT).compareTo(BigDecimal.ZERO) == -1) {
                 if (percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == -1
                         || percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == 0) {

@@ -122,9 +122,9 @@ public class MonitorPrice {
             /****************************/
             text += "<br>";
             if (Constant.getFearAndGreedy().getStatus().toUpperCase().contains("FEAR")) {
-                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " => " + Constant.getFearAndGreedy().getValue(), Constant.RED_COLOR) + " <br>";
+                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " Index => " + Constant.getFearAndGreedy().getValue(), Constant.RED_COLOR) + " <br>";
             } else {
-                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " => " + Constant.getFearAndGreedy().getValue(), Constant.GREEN_COLOR) + " <br>";
+                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " Index => " + Constant.getFearAndGreedy().getValue(), Constant.GREEN_COLOR) + " <br>";
             }
 
             da.put("DA", text);

@@ -16,16 +16,14 @@ import java.util.concurrent.ConcurrentSkipListMap;
 public class Constant {
     public static final String KEY_LOOP = "LOOP";
     public static final String KEY_PERCENT = "PERCENT";
-    public static final String KEY_PERCENT_ABOUT = "PERCENT_ABOUT";
-    public static String KEY_PERCENT_SHOW_PRICE_VALUE = "BTC";
     public static String url = "https://api.binance.com/api/v3/ticker/price";
     public static ConcurrentSkipListMap<String, BigDecimal> priceBinanceCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> priceBoughtCoin = new ConcurrentSkipListMap<String, BigDecimal>();
     public static ConcurrentSkipListMap<String, BigDecimal> notifyCoin = new ConcurrentSkipListMap<>();
     public static BigDecimal loopTIme = null;
-    public static BigDecimal timeDefaultFromUser = new BigDecimal("0");
     public static String RED_COLOR = "#EE0000";
     public static String GREEN_COLOR = "#0fbd49";
+    public static String BLACK_COLOR = "#000099";
     public static int COUNT_SAVE_BUTTON = 0;
     private static Gson gson = new Gson();
     public static String REAL_TIME = "0.03";
@@ -66,7 +64,6 @@ public class Constant {
         while (true) {
             try {
                 System.out.println("getPriceBinance() -> " + url);
-                //String dataFromB = MyGETRequest(Constant.url);
                 String dataFromB = getJsonData(Constant.url);
                 if (StringUtils.isEmpty(dataFromB)) {
                     throw new Exception("->> Binance return empty");
@@ -96,11 +93,11 @@ public class Constant {
         return map;
     }
 
-    public synchronized static FearGreendy getFearAndGreendy() {
+    public synchronized static FearGreendy getFearAndGreedy() {
         try {
             if (fearAndGreendy == null) {
                 String url = "https://api.alternative.me/fng/";
-                //String data = MyGETRequest(url);
+                System.out.println("getFearAndGreedy() -> " + url);
                 String data = getJsonData(url);
                 Map<String, Object> map = gson.fromJson(data, Map.class);
                 List index = (List) map.get("data");

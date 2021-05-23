@@ -26,7 +26,6 @@ public class MonitorPrice {
         try {
             if (Constant.priceBoughtCoin.size() == 0) {
                 loadData(context);
-                Constant.timeDefaultFromUser = Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
             }
 
             if (Constant.priceBoughtCoin.size() == 0) {
@@ -37,6 +36,7 @@ public class MonitorPrice {
 
             String text = "";
             HashMap<String, String> priceMap = Constant.getPriceBinance();
+            String colorCoin = "";
             for (String coin : Constant.priceBoughtCoin.keySet()) {
                 if (!priceMap.containsKey(coin)) {
                     continue;
@@ -47,27 +47,22 @@ public class MonitorPrice {
                 if (coin.equals(Constant.KEY_LOOP)) {
                     continue;
                 }
-                if (coin.equals(Constant.KEY_PERCENT_ABOUT)) {
-                    continue;
-                }
-
                 Constant.priceBinanceCoin.put(coin, new BigDecimal(priceMap.get(coin)).setScale(5, RoundingMode.HALF_UP));
                 String notifyCoinCode = Constant.notifyCoin.containsKey(coin) ? "N" : "";
-                if (Constant.notifyCoin.containsKey(coin)) {
-                    text += "------------------------------------------------------------<br>";
-                }
                 if (new BigDecimal(priceMap.get(coin)).compareTo(Constant.priceBoughtCoin.get(coin)) == -1) {
+                    colorCoin = Constant.RED_COLOR;
+                    if (Constant.notifyCoin.containsKey(coin)) {
+                        colorCoin = Constant.BLACK_COLOR;
+                    }
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
-                            Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.RED_COLOR);
+                            Constant.priceBinanceCoin.get(coin), notifyCoinCode), colorCoin);
                 } else {
+                    colorCoin = Constant.GREEN_COLOR;
+                    if (Constant.notifyCoin.containsKey(coin)) {
+                        colorCoin = Constant.BLACK_COLOR;
+                    }
                     text += Constant.addColor(String.format("%s : %s :%s<br>", coin,
-                            Constant.priceBinanceCoin.get(coin), notifyCoinCode), Constant.GREEN_COLOR);
-                }
-                if (Constant.notifyCoin.containsKey(coin)) {
-                    text += "------------------------------------------------------------<br>";
-                }
-                if (Constant.notifyCoin.containsKey(coin)) {
-                    da.put("SHOW_PRICE_SCREEN", coin.toUpperCase() + ":" + Constant.priceBinanceCoin.get(coin));
+                            Constant.priceBinanceCoin.get(coin), notifyCoinCode), colorCoin);
                 }
             }
 
@@ -103,11 +98,8 @@ public class MonitorPrice {
                 }
 
                 String coinNameAndBoughtPrice = String.format("%s(%s)", coin, Constant.priceBoughtCoin.get(coin));
-                if (Constant.notifyCoin.containsKey(coin)) {
-                    text += "------------------------------------------------------------<br>";
-                }
 
-                if(coinDropMost == null) {
+                if (coinDropMost == null) {
                     coinDropMost = new TakeIncreaseAmount();
                     coinDropMost.setPrice(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
                     coinDropMost.setSymbol(coin);
@@ -119,24 +111,32 @@ public class MonitorPrice {
                 }
 
                 if (caculateP.compareTo(BigDecimal.ZERO) == 1 || caculateP.compareTo(BigDecimal.ZERO) == 0) {
+                    colorCoin = Constant.GREEN_COLOR;
+                    if (Constant.notifyCoin.containsKey(coin)) {
+                        colorCoin = Constant.BLACK_COLOR;
+                    }
                     text += Constant.addColor(String.format("%s%s%s%s",
                             coinNameAndBoughtPrice,
                             balanceSpace(coinNameAndBoughtPrice, signal, 20),
-                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.GREEN_COLOR);
+                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), colorCoin);
                     text += "<br>";
                     if (Constant.notifyCoin.containsKey(coin)) {
                         coinDropMost.setCoinBuySymbol(coin);
                         coinDropMost.setPriceCoinBuy(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
                     }
                 } else {
+                    colorCoin = Constant.RED_COLOR;
+                    if (Constant.notifyCoin.containsKey(coin)) {
+                        colorCoin = Constant.BLACK_COLOR;
+                    }
                     text += Constant.addColor(String.format("%s%s%s%s",
                             coinNameAndBoughtPrice,
                             balanceSpace(coinNameAndBoughtPrice, signal, 20),
-                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), Constant.RED_COLOR);
+                            signal, caculateP.setScale(2, RoundingMode.HALF_UP)), colorCoin);
                     text += "<br>";
 
                     // set coin most drop than all.
-                    if(caculateP.setScale(2, RoundingMode.HALF_UP).compareTo(new BigDecimal(coinDropMost.getPrice())) == -1){
+                    if (caculateP.setScale(2, RoundingMode.HALF_UP).compareTo(new BigDecimal(coinDropMost.getPrice())) == -1) {
                         coinDropMost.setPrice(caculateP.setScale(2, RoundingMode.HALF_UP).toPlainString());
                         coinDropMost.setSymbol(coin);
                         if (Constant.notifyCoin.containsKey(coin)) {
@@ -145,71 +145,24 @@ public class MonitorPrice {
                         }
                     }
                 }
-                if (Constant.notifyCoin.containsKey(coin)) {
-                    text += "------------------------------------------------------------<br>";
-                }
             }
 
             /****************************/
-            text += "FearAndGreendy => (" + Constant.getFearAndGreendy().getValue() + ") => " + Constant.getFearAndGreendy().getStatus()+ " <br>";
-            /****************************/
-
-            /****************************/
-            if(coinDropMost != null && coinDropMost.getCoinBuySymbol() != null){
-                BigDecimal increasePercent = new BigDecimal(coinDropMost.getPriceCoinBuy()).subtract(new BigDecimal(coinDropMost.getPrice()));
-                if(increasePercent.compareTo(new BigDecimal("2")) == 1){
-                    text += Constant.addColor("IF IN COIN ( "+coinDropMost.getSymbol()+" ) INCREASE (" + increasePercent.toPlainString()  + "%)", Constant.GREEN_COLOR) +" <br>";
-                }
-            }
-            /****************************/
-
-            text += "-------------------------------------------------------<br>";
-            text += Constant.KEY_LOOP + ":" + Constant.loopTIme.intValue() + "<br>";
-            text += Constant.KEY_PERCENT + ":" + Constant.priceBoughtCoin.get(Constant.KEY_PERCENT).intValue() + "<br>";
-            text += Constant.KEY_PERCENT_ABOUT + ":" +
-                    (Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT) ?
-                            Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT).intValue() : "0")
-                    + "<br>";
-
-            System.out.println("Percent:" + percentIncrese);
-            da.put("DA", text);
-            // compare <> 0
-            if (percentIncrese.compareTo(BigDecimal.ZERO) == 1 || percentIncrese.compareTo(BigDecimal.ZERO) == -1) {
-                da.put("percent", percentIncrese.toString() + " %");
-            }
-
-            // if contain KEY_ABOUT
-            if (Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT_ABOUT)
-                    && Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT).compareTo(BigDecimal.ZERO) != 0) {
-                if (percentIncrese.compareTo(BigDecimal.ZERO) == -1) {
-                    if (percentIncrese.compareTo(
-                            Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)
-                                    .multiply(new BigDecimal("-1"))) == -1
-                            || percentIncrese.compareTo(
-                            Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)
-                                    .multiply(new BigDecimal("-1"))) == 0) {
-                        da.put("NO", "A");
-                    }
-                } else {
-                    if (percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)) == 1
-                            || percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT_ABOUT)) == 0) {
-                        da.put("NO", "A");
-                    }
-                }
-                return da;
-            }
-            // if set < 0 else set > 0
-            if (Constant.priceBoughtCoin.get(Constant.KEY_PERCENT).compareTo(BigDecimal.ZERO) == -1) {
-                if (percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == -1
-                        || percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == 0) {
-                    da.put("NO", "A");
-                }
+            text += "<br>";
+            if (Constant.getFearAndGreedy().getStatus().toUpperCase().contains("FEAR")) {
+                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " => " + Constant.getFearAndGreedy().getValue(), Constant.RED_COLOR) + " <br>";
             } else {
-                if (percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == 1
-                        || percentIncrese.compareTo(Constant.priceBoughtCoin.get(Constant.KEY_PERCENT)) == 0) {
-                    da.put("NO", "A");
+                text += Constant.addColor(Constant.getFearAndGreedy().getStatus() + " => " + Constant.getFearAndGreedy().getValue(), Constant.GREEN_COLOR) + " <br>";
+            }
+
+            if (coinDropMost != null && coinDropMost.getCoinBuySymbol() != null) {
+                BigDecimal increasePercent = new BigDecimal(coinDropMost.getPriceCoinBuy()).subtract(new BigDecimal(coinDropMost.getPrice()));
+                if (increasePercent.compareTo(new BigDecimal("2")) == 1) {
+                    text += Constant.addColor("IF IN COIN ( " + coinDropMost.getSymbol() + " ) INCREASE (" + increasePercent.toPlainString() + "%)", Constant.GREEN_COLOR) + " <br>";
                 }
             }
+
+            da.put("DA", text);
         } catch (Exception e) {
             da.put("DA", e.getMessage());
             da.put("ERROR", "No Access Internet. Error:" + e);
@@ -248,7 +201,7 @@ public class MonitorPrice {
             if (!existed) {
                 FileOutputStream fileout = context.openFileOutput(fileName, Context.MODE_PRIVATE);
                 OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
-                outputWriter.write("BTC:0: \n LOOP:5 \n PERCENT:5");
+                outputWriter.write("BTC:0: \n LOOP:5000 \n PERCENT:5000");
                 outputWriter.close();
             }
             FileInputStream fis = context.openFileInput(fileName);
@@ -265,7 +218,6 @@ public class MonitorPrice {
                 try {
                     if (String.valueOf(d[2]).toUpperCase().trim().equals("N")) {
                         Constant.notifyCoin.put(coinName, BigDecimal.ZERO);
-                        Constant.KEY_PERCENT_SHOW_PRICE_VALUE = coinName.toUpperCase();
                     }
                 } catch (Exception ex) {
                     //ex.printStackTrace();
@@ -273,10 +225,10 @@ public class MonitorPrice {
             }
             // fix missing a field
             if (!Constant.priceBoughtCoin.containsKey(Constant.KEY_PERCENT)) {
-                Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("2"));
+                Constant.priceBoughtCoin.put(Constant.KEY_PERCENT, new BigDecimal("5000"));
             }
             if (!Constant.priceBoughtCoin.containsKey(Constant.KEY_LOOP)) {
-                Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("2"));
+                Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("5000"));
             }
             Constant.loopTIme = Constant.priceBoughtCoin.get(Constant.KEY_LOOP);
             br.close();
@@ -316,8 +268,9 @@ public class MonitorPrice {
     }
 
     public void saveData(Context context, String text) {
-        String fileName = "mydatacoin.txt";
         try {
+            text += Constant.KEY_LOOP + ":5000 \n";
+            text += Constant.KEY_PERCENT + ":5000 \n";
             FileOutputStream fileout = context.openFileOutput("mydatacoin.txt", Context.MODE_PRIVATE);
             OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
             outputWriter.write(text);

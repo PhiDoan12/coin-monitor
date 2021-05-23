@@ -1,6 +1,5 @@
 package com.coin;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
@@ -70,9 +69,6 @@ public class MainActivity extends AppCompatActivity {
             Constant.increaseSaveCount();
             if (Constant.getSaveCount() >= 2) {
                 String textsss = text.getText().toString();
-                if (!textsss.contains(Constant.KEY_PERCENT)) {
-                    return;
-                }
                 monitorPrice.saveData(getApplicationContext(), textsss);
                 Constant.resetSaveCount();
                 getPrice();
@@ -94,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         loadData.setOnClickListener(v -> {
             try {
-                Constant.priceBoughtCoin.put(Constant.KEY_LOOP, Constant.timeDefaultFromUser);
+                Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("3"));
                 //onPause = false;
                 setOnPause(false);
                 button.setText("Save");
@@ -114,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         System.out.println("onResume");
         super.onResume();
-        //onPause = false;
         setOnPause(false);
         getPrice();
     }
@@ -123,9 +118,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         System.out.println("OnPause");
         super.onPause();
-        //onPause = true;
         setOnPause(true);
-        Constant.priceBoughtCoin.put(Constant.KEY_LOOP, Constant.timeDefaultFromUser);
+        Constant.priceBoughtCoin.put(Constant.KEY_LOOP, new BigDecimal("5000"));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -147,11 +141,6 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     builder.append(hd.get("DA"));
-                    if (hd.containsKey("NO")) {
-                        if (getOnPause() == true) {
-                            notifyABC(hd.get("percent"), false);
-                        }
-                    }
 
                     runOnUiThread(() -> {
                         text.setText("");
@@ -164,8 +153,7 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    Long time = 0L;
-                    time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
+                    Long time = monitorPrice.getTime().multiply(new BigDecimal("60000")).longValue();
 
                     Thread.sleep(time);
 
@@ -175,32 +163,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         threadLoop.start();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void notifyABC(String price, Boolean disable) {
-        Notification notification = new Notification.Builder(getApplicationContext())
-                .setContentTitle("MonitorPrice")
-                .setContentText("Coin increase: " + price)
-                .setAutoCancel(true)
-                .setVibrate(pattern)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setChannelId(CHANNEL_ID)
-                .setSound(soundUri, audioAttributes)
-                .build();
-
-        if (disable == true) {
-            mChannel.setVibrationPattern(new long[]{0L});
-        } else {
-            mChannel.setVibrationPattern(pattern);
-        }
-
-        notificationManager.notify(0, notification);
-    }
-
-    private synchronized boolean getOnPause() {
-        return this.onPause;
     }
 
     private synchronized void setOnPause(boolean onPause) {

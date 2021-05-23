@@ -41,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if(targetMode == false){
+                if (targetMode == false) {
                     BigDecimal priceBig = new BigDecimal(priceText);
                     BigDecimal percentBig = new BigDecimal(percentText);
                     BigDecimal profit = priceBig.multiply(percentBig).divide(new BigDecimal("100"));
                     BigDecimal result = priceBig.add(profit);
                     result.setScale(4, BigDecimal.ROUND_HALF_UP);
                     textView.setText(result.toString());
-                }else{
+                } else {
                     BigDecimal priceBig = new BigDecimal(priceText);
                     BigDecimal targetPrice = new BigDecimal(percentText);
                     BigDecimal gap = targetPrice.subtract(priceBig);
@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity {
 
         targetModeBtn.setOnClickListener(v -> {
             try {
-                if(targetMode == false){
+                if (targetMode == false) {
                     targetModeBtn.setText("Target Mode (True)");
                     targetMode = true;
-                }else{
+                } else {
                     targetModeBtn.setText("Target Mode (False)");
                     targetMode = false;
                 }

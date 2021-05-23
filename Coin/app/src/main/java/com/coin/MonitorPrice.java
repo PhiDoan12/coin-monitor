@@ -234,8 +234,10 @@ public class MonitorPrice {
 
     public void saveData(Context context, String text) {
         try {
-            text += Constant.KEY_LOOP + ":5000 \n";
-            text += Constant.KEY_PERCENT + ":5000 \n";
+            if(!text.contains(Constant.KEY_LOOP)){
+                text += Constant.KEY_LOOP + ":5000 \n";
+                text += Constant.KEY_PERCENT + ":5000 \n";
+            }
             FileOutputStream fileout = context.openFileOutput("mydatacoin.txt", Context.MODE_PRIVATE);
             OutputStreamWriter outputWriter = new OutputStreamWriter(fileout);
             outputWriter.write(text);
